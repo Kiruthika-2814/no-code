@@ -1,5 +1,5 @@
 [
-  {
+{
     "pageName": "homePage",
     "sidebarGroups": [
       {
@@ -142,34 +142,6 @@
             "icon": "bi bi-textarea-resize"
           },
           {
-            "type": "name-group",
-            "id": "nameFields",
-            "displayName": "Name Fields",
-            "class": "d-flex flex-row gap-2",
-           
-            "children": [
-              {
-                "type": "input",
-                "id": "firstName",
-                "displayName": "First Name",
-                "label": "First Name",
-                "placeholder": "Enter first name",
-                
-                "class": "form-control"
-              },
-              {
-                "type": "input",
-                "id": "lastName",
-                "displayName": "Last Name",
-                "label": "Last Name",
-                "placeholder": "Enter last name",
-                
-                "class": "form-control"
-              }
-            ]
-          },
-          
-          {
             "type": "select",
             "id": "dropdownExample",
             "displayName": "Dropdown",
@@ -281,6 +253,4 @@
       }
     ]
   }
-]  
-
- 
+]

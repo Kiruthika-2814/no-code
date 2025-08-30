@@ -59,7 +59,7 @@
                     Drop components here
                   </div>
                   <!-- Children -->
-                  <ng-container *ngFor="let child of comp.children; trackBy: trackByIndex">
+                  <ng-container *ngFor="let child of comp.children; trackBy: trackById">
                     <div cdkDrag
                          [cdkDragData]="child"
                          (click)="selectComponent(child); $event.stopPropagation()"
@@ -80,53 +80,39 @@
                 </div>
               </ng-container>
 
-              <!-- Layout -->
-              <ng-container *ngSwitchCase="'layout'">
-                <div class="row g-3 border p-2 mb-2" cdkDropListGroup
-                     (click)="selectComponent(comp); $event.stopPropagation()">
-                  <div *ngFor="let col of comp.columns"
-                       class="col position-relative border p-2"
-                       cdkDropList
-                       [id]="col.id"
-                       [cdkDropListData]="col.children"
-                       [cdkDropListConnectedTo]="getConnectedLists(col.id)"
-                       (cdkDropListDropped)="drop($event, col)">
-                    <!-- Column Resize Handle -->
-                    <div class="resize-handle" (mousedown)="startResize($event, col); $event.stopPropagation()"></div>
-                    <!-- Column Overlay -->
-                    <div class="overlay" *ngIf="col.showOverlay">
-                      {{ col.width }} x {{ col.height }}
-                    </div>
-                    <!-- Empty placeholder -->
-                    <div *ngIf="!col.children?.length" class="text-muted text-center" style="pointer-events: none;" (click)="$event.stopPropagation()">
-                      Drop here
-                    </div>
-                    <!-- Children -->
-                    <ng-container *ngFor="let child of col.children; trackBy: trackByIndex">
-                      <div cdkDrag
-                           [cdkDragData]="child"
-                           (click)="selectComponent(child); $event.stopPropagation()"
-                           [ngStyle]="getChildStyle(child, comp)"
-                           [ngClass]="{
-                             'border': selectedComponent?.id === child.id,
-                             'border-primary': selectedComponent?.id === child.id,
-                             'position-relative': true,
-                             'canvas-child': true
-                           }">
-                        <button *ngIf="selectedComponent?.id === child.id"
-                                class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
-                                (click)="deleteSelected(); $event.stopPropagation()">✕</button>
-                        <ng-template [ngTemplateOutlet]="renderComponent"
-                                     [ngTemplateOutletContext]="{ $implicit: child, parent: col }"></ng-template>
-                      </div>
-                    </ng-container>
+              <!-- Nav -->
+              <ng-container *ngSwitchCase="'nav'">
+                <div cdkDropList
+                     [id]="comp.id"
+                     [cdkDropListData]="comp.children || []"
+                     [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
+                     (cdkDropListDropped)="drop($event, comp)"
+                     (click)="selectComponent(comp); $event.stopPropagation()"
+                     class="p-2 border rounded position-relative"
+                     [ngStyle]="getComponentStyle(comp)">
+                  <!-- Empty placeholder -->
+                  <div *ngIf="!comp.children?.length" class="text-muted text-center w-100" style="pointer-events: none;" (click)="$event.stopPropagation()">
+                    Drop components here
                   </div>
-                  <!-- Add Column -->
-                  <button *ngIf="comp.columns.length < 5"
-                          class="btn btn-sm btn-outline-primary mt-2"
-                          (click)="addColumn(comp)">
-                    + Add Column
-                  </button>
+                  <!-- Children -->
+                  <ng-container *ngFor="let child of comp.children; trackBy: trackById">
+                    <div cdkDrag
+                         [cdkDragData]="child"
+                         (click)="selectComponent(child); $event.stopPropagation()"
+                         [ngStyle]="getChildStyle(child, comp)"
+                         [ngClass]="{
+                           'border': selectedComponent?.id === child.id,
+                           'border-primary': selectedComponent?.id === child.id,
+                           'position-relative': true,
+                           'canvas-child': true
+                         }">
+                      <button *ngIf="selectedComponent?.id === child.id"
+                              class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                              (click)="deleteSelected(); $event.stopPropagation()">✕</button>
+                      <ng-template [ngTemplateOutlet]="renderComponent"
+                                   [ngTemplateOutletContext]="{ $implicit: child, parent: comp }"></ng-template>
+                    </div>
+                  </ng-container>
                 </div>
               </ng-container>
 
@@ -263,11 +249,18 @@
                   </tr>
                 </tbody>
               </table>
+
+              <!-- Default case -->
+              <ng-container *ngSwitchDefault>
+                <div [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()">
+                  {{ comp.displayName || comp.type }}
+                </div>
+              </ng-container>
             </ng-container>
           </ng-template>
 
           <!-- Top-level components -->
-          <ng-container *ngFor="let comp of canvasComponents; trackBy: trackByIndex">
+          <ng-container *ngFor="let comp of canvasComponents; trackBy: trackById">
             <div cdkDrag
                  [cdkDragData]="comp"
                  (click)="selectComponent(comp); $event.stopPropagation()"
@@ -303,4 +296,4 @@
         (cancel)="deselectComponent()"></app-properties-panel>
     </div>
   </div>
-</div> 
+</div>

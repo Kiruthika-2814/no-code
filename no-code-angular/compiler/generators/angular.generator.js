@@ -189,5 +189,3 @@ ${component.children?.map(child => this.generateComponentHtml(child)).join('\n')
             .join('');
     }
 }
-exports.AngularGenerator = AngularGenerator;
-//# sourceMappingURL=angular.generator.js.map
