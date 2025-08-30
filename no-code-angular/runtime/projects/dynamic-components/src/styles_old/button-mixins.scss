@@ -1,0 +1,32 @@
+
+@mixin button-variant(
+  $background,
+  $border,
+  $hover-background: darken($background, 7.5%),
+  $hover-border: darken($border, 10%),
+  $active-background: darken($background, 10%),
+  $active-border: darken($border, 12.5%)
+) {
+  color: #fff;
+  background-color: $background;
+  border: 1px solid $border;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: $hover-background;
+    border-color: $hover-border;
+  }
+
+  &:active {
+    background-color: $active-background;
+    border-color: $active-border;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}

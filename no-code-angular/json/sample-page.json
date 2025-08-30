@@ -1,0 +1,286 @@
+[
+  {
+    "pageName": "homePage",
+    "sidebarGroups": [
+      {
+        "groupName": "Structure",
+        "components": [
+          {
+            "type": "section",
+            "id": "section-template",
+            "displayName": "Section",
+            "class": "w-100 py-4 bg-light",
+            "icon": "bi bi-layout-text-window-reverse",
+            "children": []
+          },
+          {
+            "type": "container",
+            "id": "container-template",
+            "displayName": "Container",
+            "class": "d-flex flex-column gap-3 p-3 border bg-light rounded",
+            "icon": "bi bi-box",
+            "children": []
+          },
+          {
+            "type": "quick-stack",
+            "id": "quick-stack-template",
+            "displayName": "Quick Stack",
+            "class": "d-flex flex-wrap gap-2",
+            "icon": "bi bi-grid",
+            "children": []
+          },
+          {
+            "type": "vflex",
+            "id": "vflex-template",
+            "displayName": "V Flex",
+            "class": "d-flex flex-column gap-2",
+            "icon": "bi bi-arrow-down-up",
+            "children": []
+          },
+          {
+            "type": "hflex",
+            "id": "hflex-template",
+            "displayName": "H Flex",
+            "class": "d-flex flex-row gap-2",
+            "icon": "bi bi-arrow-left-right",
+            "children": []
+          },
+          {
+            "type": "page-slot",
+            "id": "page-slot-template",
+            "displayName": "Page Slot",
+            "class": "border border-dashed p-4 bg-light",
+            "icon": "bi bi-file-earmark-plus",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "divider",
+        "id": "group-divider-1",
+        "class": "border-top my-2"
+      },
+      {
+        "groupName": "Basic",
+        "components": [
+          {
+            "type": "div-block",
+            "id": "div-block-template",
+            "displayName": "Div Block",
+            "class": "border bg-light p-3",
+            "icon": "bi bi-square",
+            "children": []
+          },
+          {
+            "type": "list",
+            "id": "list-template",
+            "displayName": "List",
+            "class": "ps-3",
+            "listType": "unordered",
+            "items": [],
+            "icon": "bi bi-list-ul",
+            "children": []
+          },
+          {
+            "type": "list-item",
+            "id": "list-item-template",
+            "displayName": "List Item",
+            "class": "ps-3",
+            "text": "List Item",
+            "icon": "bi bi-list",
+            "children": []
+          },
+          {
+            "type": "link-block",
+            "id": "link-block-template",
+            "displayName": "Link Block",
+            "class": "text-primary text-decoration-underline",
+            "text": "Link",
+            "href": "#",
+            "icon": "bi bi-link-45deg"
+          },
+          {
+            "type": "button",
+            "id": "button-template",
+            "displayName": "Button",
+            "class": "btn btn-primary",
+            "text": "Button",
+            "icon": "bi bi-dash-lg"
+          }
+        ]
+      },
+      {
+        "type": "divider",
+        "id": "group-divider-2",
+        "class": "border-top my-2"
+      },
+      {
+        "groupName": "Form & Content",
+        "components": [
+          {
+            "type": "text",
+            "id": "pageTitle",
+            "displayName": "Text",
+            "text": "Welcome to Home Page",
+            "class": "display-5 fw-bold text-dark text-center",
+            "icon": "bi bi-fonts"
+          },
+          {
+            "type": "input",
+            "id": "textInput",
+            "displayName": "Input",
+            "placeholder": "Enter text",
+            "class": "form-control w-100",
+            "icon": "bi bi-input-cursor-text"
+          },
+          {
+            "type": "textarea",
+            "id": "feedbackMessage",
+            "displayName": "Textarea",
+            "placeholder": "Enter your feedback",
+            "class": "form-control w-100",
+            "icon": "bi bi-textarea-resize"
+          },
+          {
+            "type": "name-group",
+            "id": "nameFields",
+            "displayName": "Name Fields",
+            "class": "d-flex flex-row gap-2",
+           
+            "children": [
+              {
+                "type": "input",
+                "id": "firstName",
+                "displayName": "First Name",
+                "label": "First Name",
+                "placeholder": "Enter first name",
+                
+                "class": "form-control"
+              },
+              {
+                "type": "input",
+                "id": "lastName",
+                "displayName": "Last Name",
+                "label": "Last Name",
+                "placeholder": "Enter last name",
+                
+                "class": "form-control"
+              }
+            ]
+          },
+          
+          {
+            "type": "select",
+            "id": "dropdownExample",
+            "displayName": "Dropdown",
+            "options": ["Option 1", "Option 2", "Option 3"],
+            "class": "form-select w-100",
+            "icon": "bi bi-ui-checks"
+          },
+          {
+            "type": "checkbox",
+            "id": "multiCheckbox",
+            "displayName": "Checkbox Group",
+            "options": [
+              "I agree to the terms",
+              "Receive newsletter",
+              "Enable notifications"
+            ],
+            "class": "checkbox checkbox-primary",
+            "icon": "bi bi-check-square",
+            "values": []
+          },
+          {
+            "type": "radio-group",
+            "id": "genderSelection",
+            "displayName": "Radio Group",
+            "options": ["Male", "Female", "Other"],
+            "radioStyle": "radio-success",
+            "icon": "bi bi-circle"
+          },
+          {
+            "type": "table",
+            "id": "sampleTable",
+            "displayName": "Table",
+            "headers": ["Name", "Age", "Email"],
+            "rows": [
+              ["Alice", "30", "alice@example.com"],
+              ["Bob", "28", "bob@example.com"]
+            ],
+            "class": "table table-striped table-bordered w-100",
+            "icon": "bi bi-table"
+          },
+          {
+            "type": "image",
+            "id": "heroImage",
+            "displayName": "Image",
+            "src": "https://images.unsplash.com/photo-1743473396609-4ff7ad164f4d?q=80&w=870&auto=format&fit=crop",
+            "alt": "Home Hero Image",
+            "class": "img-fluid rounded shadow",
+            "icon": "bi bi-image"
+          },
+          {
+            "type": "icon",
+            "id": "starIcon",
+            "displayName": "Icon",
+            "iconClass": "fa fa-star text-warning fs-2",
+            "icon": "bi bi-star"
+          },
+          {
+            "type": "link",
+            "id": "externalLink",
+            "displayName": "Link",
+            "text": "Visit OpenAI",
+            "href": "https://openai.com",
+            "class": "text-primary text-decoration-underline",
+            "icon": "bi bi-link-45deg"
+          },
+          {
+            "type": "divider",
+            "id": "sectionDivider",
+            "displayName": "Divider",
+            "class": "border-top w-100",
+            "icon": "bi bi-dash"
+          },
+          {
+            "type": "progress",
+            "id": "progressBar",
+            "displayName": "Progress Bar",
+            "class": "progress w-100",
+            "icon": "bi bi-bar-chart"
+          },
+          {
+            "type": "video",
+            "id": "introVideo",
+            "displayName": "Video",
+            "src": "https://www.w3schools.com/html/mov_bbb.mp4",
+            "controls": true,
+            "autoplay": false,
+            "class": "rounded shadow",
+            "icon": "bi bi-camera-video"
+          },
+          {
+            "type": "iframe",
+            "id": "newIframe",
+            "displayName": "Iframe",
+            "src": "https://www.siegerglobal.net/",
+            "title": "Sieger",
+            "class": "w-100",
+            "icon": "bi bi-window"
+          },
+          {
+            "type": "list",
+            "id": "featureList",
+            "displayName": "Feature List",
+            "listType": "unordered",
+            "items": ["C2C", "WMS", "CPS"],
+            "class": "ps-3",
+            "icon": "bi bi-list-ul"
+          }
+        ]
+      }
+    ]
+  }
+]  
+
+ 

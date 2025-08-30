@@ -1,0 +1,262 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "pageName": { "type": "string" },
+      "components": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/component" }
+      }
+    },
+    "required": ["pageName", "components"]
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "container", "text", "button", "input", "textarea", "select", "image", "card", "grid", "table",
+            "form-group", "checkbox", "radio-group", "tabs", "accordion", "video", "icon", "link", "divider", "progress", "iframe", "list","section", "quick-stack", "v-flex", "h-flex", "page-slot"
+
+          ]
+        },
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "class": { "type": "string" },
+        "placeholder": { "type": "string" },
+        "src": { "type": "string" },
+        "alt": { "type": "string" },
+        "columns": { "type": "integer", "minimum": 1 },
+        "headers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "options": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "controls": { "type": "boolean" },
+        "autoplay": { "type": "boolean" },
+        "iconClass": { "type": "string" },
+        "href": { "type": "string" },
+        "styles": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "action": { "type": "string" },
+        "inputType": { "type": "string" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/component" }
+        }
+      },
+      "required": ["type", "id"],
+      "anyOf": [
+        {
+          "if": { "properties": { "type": { "const": "container" } } },
+          "then": { "properties": { "children": { "type": "array", "items": { "$ref": "#/$defs/component" } } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "text" } } },
+          "then": { "required": ["text"], "properties": { "children": { "type": "array", "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "button" } } },
+          "then": { "required": ["text"], "properties": { "children": { "type": "array", "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "input" } } },
+          "then": {
+            "required": ["placeholder"],
+            "properties": {
+              "inputType": { "type": "string" },
+              "children": { "type": "array", "maxItems": 0 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "textarea" } } },
+          "then": { "required": ["placeholder"], "properties": { "children": { "type": "array", "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "select" } } },
+          "then": {
+            "required": ["options"],
+            "properties": {
+              "children": { "type": "array", "maxItems": 0 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "image" } } },
+          "then": { "required": ["src", "alt"], "properties": { "children": { "type": "array", "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "card" } } },
+          "then": { "properties": { "children": { "type": "array", "items": { "$ref": "#/$defs/component" } } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "grid" } } },
+          "then": {
+            "required": ["columns"],
+            "properties": { "children": { "type": "array", "items": { "$ref": "#/$defs/component" } } }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "table" } } },
+          "then": {
+            "required": ["headers", "rows"],
+            "properties": { "children": { "type": "array", "maxItems": 0 } }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "form-group" } } },
+          "then": { "properties": { "children": { "type": "array", "items": { "$ref": "#/$defs/component" } } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "checkbox" } } },
+          "then": {
+            "required": ["options"],
+            "properties": { "children": { "type": "array", "maxItems": 0 } }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "radio-group" } } },
+          "then": {
+            "required": ["options"],
+            "properties": { "children": { "type": "array", "maxItems": 0 } }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "tabs" } } },
+          "then": { "properties": { "children": { "type": "array", "items": { "$ref": "#/$defs/component" } } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "accordion" } } },
+          "then": { "properties": { "children": { "type": "array", "items": { "$ref": "#/$defs/component" } } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "video" } } },
+          "then": {
+            "required": ["src"],
+            "properties": {
+              "controls": { "type": "boolean" },
+              "autoplay": { "type": "boolean" },
+              "children": { "type": "array", "maxItems": 0 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "icon" } } },
+          "then": { "required": ["iconClass"], "properties": { "children": { "type": "array", "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "link" } } },
+          "then": { "required": ["text", "href"], "properties": { "children": { "type": "array", "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "divider" } } },
+          "then": { "properties": { "children": { "type": "array", "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "progress" } } },
+          "then": { "properties": { "children": { "type": "array", "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "iframe" } } },
+          "then": { "required": ["src"], "properties": { "children": { "type": "array", "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "list" } } },
+           "then": { "required": ["listType", "items"], "properties": { "listType": { "type": "string"},
+           "items": {
+            "type": "array",
+            "minItems": 1, "items": { "type": "string" }
+      }, "children": { "type": "array", "maxItems": 0 }
+    }
+  }
+          
+        },
+        
+
+
+        {
+  "if": { "properties": { "type": { "const": "section" } } },
+  "then": {
+    "properties": {
+      "children": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/component" }
+      }
+    }
+  }
+},
+{
+  "if": { "properties": { "type": { "const": "quick-stack" } } },
+  "then": {
+    "properties": {
+      "direction": { "type": "string", "enum": ["row", "column"] },
+      "children": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/component" }
+      }
+    }
+  }
+},
+{
+  "if": { "properties": { "type": { "const": "v-flex" } } },
+  "then": {
+    "properties": {
+      "children": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/component" }
+      }
+    }
+  }
+},
+{
+  "if": { "properties": { "type": { "const": "h-flex" } } },
+  "then": {
+    "properties": {
+      "children": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/component" }
+      }
+    }
+  }
+},
+{
+  "if": { "properties": { "type": { "const": "page-slot" } } },
+  "then": {
+    "properties": {
+      "children": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/component" }
+      }
+    }
+  }
+}
+
+       
+
+
+  
+        
+      ]
+    }
+  }
+}
+
+
+      

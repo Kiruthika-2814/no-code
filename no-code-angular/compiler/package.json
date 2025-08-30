@@ -1,0 +1,30 @@
+{
+  "name": "no-code-compiler",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.1.0",
+    "ajv": "^8.17.1",
+    "bootstrap": "^5.3.7",
+    "jest": "^30.0.5",
+    "ng-packagr": "^20.1.0",
+    "nodemon": "^3.1.10",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "live-test": "ts-node src/live-test.ts",
+    "watch": "nodemon --watch ../json/ui.json --ext json --exec ts-node src/live-test.ts"
+  },
+  "peerDependencies": {
+    "bootstrap": "^5.3.7"
+  },
+  "dependencies": {
+    "@angular/router": "^20.1.3",
+    "@ng-bootstrap/ng-bootstrap": "^19.0.1",
+    "sass": "^1.89.2"
+  }
+}

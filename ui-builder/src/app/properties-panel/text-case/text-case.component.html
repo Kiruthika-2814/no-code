@@ -1,0 +1,11 @@
+<!-- Text Case -->
+<div class="mb-3" *ngIf="isTextEditable()">
+  <label class="form-label">Text Case</label>
+  <select class="form-select" [(ngModel)]="textTransform" (ngModelChange)="updateCanvasComponent()">
+    <option value="none">Normal</option>
+    <option value="uppercase">UPPERCASE</option>
+    <option value="lowercase">lowercase</option>
+    <option value="capitalize">Capitalize</option>
+    <option value="sentence">Sentence case</option>
+  </select>
+</div>

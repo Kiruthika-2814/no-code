@@ -1,0 +1,15 @@
+<!-- Color -->
+<div class="mb-3" *ngIf="isTextEditable()">
+  <label class="form-label">Color</label>
+  <input type="color" class="form-control form-control-color" 
+         [(ngModel)]="selectedComponent!.color" 
+         (ngModelChange)="updateCanvasComponent()" />
+</div>
+
+<!-- Opacity -->
+<div class="mb-3" *ngIf="isTextEditable()">
+  <label class="form-label">Opacity</label>
+  <input type="range" class="form-range" min="0" max="1" step="0.1"
+         [(ngModel)]="selectedComponent!.opacity" 
+         (ngModelChange)="updateCanvasComponent()" />
+</div>

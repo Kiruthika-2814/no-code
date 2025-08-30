@@ -1,0 +1,8 @@
+<!-- Font Weight -->
+<div class="mb-3" *ngIf="isTextEditable()">
+  <label class="form-label">Font Weight</label>
+  <select class="form-select" [(ngModel)]="selectedComponent!.fontWeight" (ngModelChange)="updateCanvasComponent()">
+    <option value="">Default</option>
+    <option *ngFor="let w of fontWeights" [value]="w">{{ w }}</option>
+  </select>
+</div>

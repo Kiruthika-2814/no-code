@@ -1,0 +1,52 @@
+/* =======================================
+   Global SCSS Entry (theme.scss)
+   ======================================= */
+
+/* 1. Bootstrap Core Functions (must be first) */
+
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+/* 2. Your Custom Variable Overrides (before Bootstrap builds itself) */
+@import "../../runtime/bootstrap/src/assets/scss/settings/bootstrap-variables";
+@import "../../runtime/bootstrap/src/assets/scss/settings/color-variables";
+@import "../../runtime/bootstrap/src/assets/scss/settings/theme-variables";
+
+/* 3. Bootstrap Core (after overrides) */
+@import "../../../node_modules/bootstrap/scss/bootstrap.scss";
+
+
+/* 5. Widgets */
+// (add widgets imports here)
+
+/* 6. Your Custom CSS Rules */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  margin: 0;
+}
+
+/* Example: Navbar Gradient Using Your New Maps */
+.header-navbar {
+  height: $header-height;
+  background: linear-gradient(
+    to right,
+    map-get($blues, "blue-500"),
+    map-get($blues, "blue-100")
+  );
+  color: #fff;
+
+  .icon-buttons .btn-circle {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: #fff;
+
+    &:hover {
+      background: #fff;
+      color: map-get($blues, "blue-500");
+    }
+  }
+}
+
+
+

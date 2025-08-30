@@ -1,0 +1,20 @@
+<!-- Table -->
+<ng-container *ngIf="selectedComponent?.type === 'table'">
+  <div class="divider my-2"><span>Table Colors</span></div>
+  <label><strong>Specific Cell Row</strong></label>
+  <input type="number" class="form-control mb-2" [(ngModel)]="selectedComponent!.rowNumber" (ngModelChange)="updateCanvasComponent()" min="0" />
+  <label><strong>Specific Cell Column</strong></label>
+  <input type="number" class="form-control mb-2" [(ngModel)]="selectedComponent!.colNumber" (ngModelChange)="updateCanvasComponent()" min="0" />
+  <label><strong>Header Background Color</strong></label>
+  <input type="color" class="form-control form-control-color mb-2 larger-color-input" [(ngModel)]="selectedComponent!.headerBgColor" (ngModelChange)="updateCanvasComponent()" />
+  <label><strong>Odd Column Background Color</strong></label>
+  <input type="color" class="form-control form-control-color mb-2 larger-color-input" [(ngModel)]="selectedComponent!.oddColumnColor" (ngModelChange)="updateCanvasComponent()" />
+  <label><strong>Even Column Background Color</strong></label>
+  <input type="color" class="form-control form-control-color mb-2 larger-color-input" [(ngModel)]="selectedComponent!.evenColumnColor" (ngModelChange)="updateCanvasComponent()" />
+  <label><strong>Odd Row Background Color</strong></label>
+  <input type="color" class="form-control form-control-color mb-2 larger-color-input" [(ngModel)]="selectedComponent!.oddRowColor" (ngModelChange)="updateCanvasComponent()" />
+  <label><strong>Even Row Background Color</strong></label>
+  <input type="color" class="form-control form-control-color mb-2 larger-color-input" [(ngModel)]="selectedComponent!.evenRowColor" (ngModelChange)="updateCanvasComponent()" />
+  <label><strong>Specific Cell Background Color</strong></label>
+  <input type="color" class="form-control form-control-color mb-2 larger-color-input" [(ngModel)]="selectedComponent!.specificCellColor" (ngModelChange)="updateCanvasComponent()" />
+</ng-container>

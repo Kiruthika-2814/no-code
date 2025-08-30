@@ -1,0 +1,105 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Properties Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="properties-panel.component.scss">
+</head>
+
+<body>
+  <div *ngIf="selectedComponent" class="properties-panel card shadow-lg" cdkDrag cdkDragRootElement=".properties-panel" cdkDragHandle>
+    <!-- Header -->
+    <div class="panel-header d-flex justify-content-between align-items-center" cdkDragHandle>
+      <h6 class="mb-0">{{ capitalize(selectedComponent?.type || '') }} Properties</h6>
+      <button class="close-btn" (click)="onCancel()" data-tooltip="Close (Esc)">&times;</button>
+    </div>
+
+    <!-- Custom Cancel Modal -->
+    <div *ngIf="showCancelModal" class="modal-overlay">
+      <div class="modal-box">
+        <button class="close-btn" (click)="closeModal()">&times;</button>
+        <div class="modal-header">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span class="warning-text">Changes are not saved!</span>
+        </div>
+        <p>Do you want to proceed?</p>
+        <div class="modal-actions">
+          <button class="btn no" (click)="closeModal()">No</button>
+          <button class="btn yes" (click)="discardChanges()">Yes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="panel-body">
+      <!-- Typography -->
+      <div class="divider"><span>Typography</span></div>
+      <div class="section">
+        <app-font-family [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-font-family>
+      </div>
+      <div class="section">
+        <app-font-size [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-font-size>
+      </div>
+      <div class="section">
+        <app-text-styles [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-text-styles>
+      </div>
+      <div class="section">
+        <app-alignment [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-alignment>
+      </div>
+      <div class="section">
+        <app-lists [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-lists>
+      </div>
+      <div class="section">
+        <app-heading-paragraph [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-heading-paragraph>
+      </div>
+      <div class="section">
+        <app-text-case [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-text-case>
+      </div>
+      <div class="section">
+        <app-color [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-color>
+      </div>
+      <div class="section">
+        <app-font-weight [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-font-weight>
+      </div>
+
+      <!-- Common -->
+      <div class="divider"><span>Common</span></div>
+      <div class="section">
+        <app-placeholder [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-placeholder>
+      </div>
+      <div class="section">
+  <app-field-size
+    [selectedComponent]="selectedComponent"
+    (componentUpdated)="onComponentUpdated($event)">
+  </app-field-size>
+</div>
+
+      <!-- Element-specific -->
+      <div class="section">
+        <app-image [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-image>
+      </div>
+      <div class="section">
+        <app-button [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-button>
+      </div>
+      <div class="section">
+        <app-video [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-video>
+      </div>
+      <div class="section">
+        <app-table [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-table>
+      </div>
+      <div class="section">
+        <app-container-nav [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"></app-container-nav>
+      </div>
+      
+
+    </div>
+
+    <!-- Footer -->
+    <div class="panel-footer d-flex justify-content-end gap-2">
+      <button class="btn btn-secondary btn-sm" (click)="onCancel()" data-tooltip="Cancel">Cancel</button>
+      <button class="btn btn-success btn-sm" (click)="onSave()" data-tooltip="Save">Save</button>
+    </div>
+  </div>
+
+  <div class="toast-message" id="toastMessage">Changes Saved</div>
+</body>

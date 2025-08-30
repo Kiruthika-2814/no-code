@@ -1,0 +1,11 @@
+<!-- Placeholder Text -->
+<div *ngIf="['text','input','email','password','number','date','textarea'].includes(selectedComponent?.type || '')">
+  <label><strong>Placeholder Text</strong></label>
+  <input 
+    type="text" 
+    class="form-control mb-2" 
+    [placeholder]="selectedComponent!.placeholder"  
+    [(ngModel)]="selectedComponent!.value"        
+    (ngModelChange)="updateCanvasComponent()"
+  />
+</div>

@@ -1,0 +1,14 @@
+<!-- Button -->
+<ng-container *ngIf="selectedComponent?.type === 'button'">
+  <div class="divider my-2"><span>Button</span></div>
+  <label><strong>Button Text</strong></label>
+  <input type="text" class="form-control mb-2" [(ngModel)]="selectedComponent!.text" (ngModelChange)="updateCanvasComponent()" placeholder="Enter button text" />
+  <label><strong>Button Style</strong></label>
+  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.btnStyle" (ngModelChange)="updateCanvasComponent()">
+    <option value="">Default</option>
+    <option value="btn-primary">Primary</option>
+    <option value="btn-secondary">Secondary</option>
+    <option value="btn-success">Success</option>
+    <option value="btn-danger">Danger</option>
+  </select>
+</ng-container>

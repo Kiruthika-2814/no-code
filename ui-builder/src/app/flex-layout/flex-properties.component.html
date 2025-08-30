@@ -1,0 +1,51 @@
+<div class="w-64 bg-gray-100 h-screen p-4">
+  <h3 class="text-lg font-semibold mb-4">Layout</h3>
+  <div *ngIf="!(selectedBlock$ | async)">Select a block to edit properties</div>
+  <div *ngIf="selectedBlock$ | async as block">
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">Display</label>
+      <select [(ngModel)]="block.displayType" (ngModelChange)="updateDisplayType(block)" class="w-full p-2 border rounded">
+        <option value="block">Block</option>
+        <option value="flex">Flex</option>
+        <option value="grid">Grid</option>
+        <option value="none">None</option>
+      </select>
+    </div>
+    <div *ngIf="block.displayType === 'flex'">
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Direction</label>
+        <select [(ngModel)]="block.flexDirection" (ngModelChange)="updateBlock(block, 'flexDirection', $event)" class="w-full p-2 border rounded">
+          <option value="row">Row</option>
+          <option value="column">Column</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Align Items</label>
+        <select [(ngModel)]="block.alignItems" (ngModelChange)="updateBlock(block, 'alignItems', $event)" class="w-full p-2 border rounded">
+          <option value="start">Start</option>
+          <option value="center">Center</option>
+          <option value="end">End</option>
+          <option value="stretch">Stretch</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Gap</label>
+        <input type="text" [(ngModel)]="block.gap" (ngModelChange)="updateBlock(block, 'gap', $event)" class="w-full p-2 border rounded" placeholder="e.g., 0.5rem">
+      </div>
+    </div>
+    <div *ngIf="block.displayType === 'grid'">
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Columns</label>
+        <input type="number" [(ngModel)]="block.columns" (ngModelChange)="updateBlock(block, 'columns', $event)" class="w-full p-2 border rounded" min="1">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Rows</label>
+        <input type="number" [(ngModel)]="block.rows" (ngModelChange)="updateBlock(block, 'rows', $event)" class="w-full p-2 border rounded" min="1">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Gap</label>
+        <input type="text" [(ngModel)]="block.gap" (ngModelChange)="updateBlock(block, 'gap', $event)" class="w-full p-2 border rounded" placeholder="e.g., 0.5rem">
+      </div>
+    </div>
+  </div>
+</div>
