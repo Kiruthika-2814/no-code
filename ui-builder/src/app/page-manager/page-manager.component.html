@@ -1,0 +1,51 @@
+<!-- Toolbar -->
+<div class="toolbar">
+  <button (click)="addPage()">➕ Add Page</button>
+  <button (click)="savePages()">💾 Save</button>
+  <button (click)="undo()" [disabled]="!history.length">↩️ Undo</button>
+  <button (click)="redo()" [disabled]="!future.length">↪️ Redo</button>
+  <button (click)="duplicatePage(selectedPage!)" [disabled]="!selectedPage">📑 Duplicate</button>
+  <button (click)="deletePage(selectedPage!)" [disabled]="!selectedPage">🗑 Delete</button>
+</div>
+
+<!-- Breadcrumb Navigation -->
+<div class="breadcrumb-bar" *ngIf="pages.length">
+  <ng-container *ngFor="let page of pages; let i = index">
+    <span
+      class="breadcrumb"
+      [class.active]="page === selectedPage"
+      (click)="selectedPage = page"
+    >
+      {{ page.name }}
+    </span>
+    <span *ngIf="i < pages.length - 1"> / </span>
+  </ng-container>
+
+  <!-- Add Page Button inline -->
+  <button class="add-breadcrumb-btn" (click)="addPage()">➕</button>
+</div>
+
+<!-- Canvas -->
+<div class="canvas" *ngIf="selectedPage">
+  <h3>{{ selectedPage.name }}</h3>
+
+  <div
+    cdkDropList
+    class="component-list"
+    [cdkDropListData]="selectedPage.components"
+    (cdkDropListDropped)="drop($event)"
+  >
+    <div
+      class="component"
+      *ngFor="let comp of selectedPage.components"
+      cdkDrag
+    >
+      {{ comp.type }} - {{ comp.value }}
+    </div>
+  </div>
+</div>
+
+<!-- Empty state -->
+<div *ngIf="!selectedPage" class="empty">
+  <p>No page selected. Create one with <strong>Add Page</strong>.</p>
+</div>

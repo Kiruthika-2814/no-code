@@ -1,0 +1,36 @@
+.breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0.5rem 0;
+  font-size: 14px;
+
+  .breadcrumb {
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #007bff;
+    }
+
+    &.active {
+      font-weight: bold;
+      color: #007bff;
+    }
+  }
+
+  .add-breadcrumb-btn {
+    margin-left: 8px;
+    padding: 0 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    color: #007bff;
+
+    &:hover {
+      color: #0056b3;
+    }
+  }
+}

@@ -8,6 +8,7 @@ import { HeaderLayoutComponent } from './header-layout/header-layout.component';
 import { PropertiesPanelComponent } from './properties-panel/properties-panel.component';
 import { SafeHtmlPipe } from '../safe-html.pipe';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { PageManagerComponent } from './page-manager/page-manager.component';
 
 interface DashboardComponent {
   type: string;
@@ -40,7 +41,6 @@ interface DashboardComponent {
   icon?: string;
   label?: string;
   id: string;
-  columns?: any[];
   children?: DashboardComponent[];
   progress?: number;
   barColor?: string;
@@ -101,7 +101,8 @@ interface CanvasConfig {
     HeaderLayoutComponent,
     PropertiesPanelComponent,
     SafeHtmlPipe,
-    SidebarComponent
+    SidebarComponent,
+    PageManagerComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -111,7 +112,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   paletteComponents: DashboardComponent[] = [];
   canvasComponents: DashboardComponent[] = [];
   sidebarGroups: any[] = [];
-  
   selectedComponent: DashboardComponent | null = null;
   canvasConfig: CanvasConfig = { flexDirection: 'row', justifyContent: 'flex-start' };
   searchTerm: string = '';
@@ -136,10 +136,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.loadJson();
     this.initializeDefaultContainer();
     this.updateConnectedLists();
-    console.log('Canvas Components on Init:', this.canvasComponents);
+    console.log('Canvas Components on Init:', JSON.stringify(this.canvasComponents, null, 2));
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    this.changeDetectorRef.markForCheck();
+  }
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
@@ -186,6 +188,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       button: 'bi bi-hand-index',
       image: 'bi bi-image',
       container: 'bi bi-box',
+      nav: 'bi bi-nav',
       dropdown: 'bi bi-caret-down',
       default: 'bi bi-box'
     };
@@ -204,11 +207,12 @@ export class AppComponent implements OnInit, AfterViewInit {
       id: comp.id || this.generateUniqueId(),
       displayName: comp.displayName || this.capitalize(type),
       placeholder: comp.placeholder || `Enter ${type} placeholder`,
+      style: comp.style || '', // Ensure style is always a string
       options: comp.options || (['select', 'radio-group', 'checkbox'].includes(type) ? [] : undefined),
       headers: comp.headers || (type === 'table' ? ['Header 1', 'Header 2'] : undefined),
       rows: comp.rows || (type === 'table' ? [['Data 1', 'Data 2']] : undefined),
       invert: type === 'table' ? comp.invert || false : undefined,
-      class: comp.class || (['container', 'nav'].includes(type) ? 'd-flex flex-column gap-3 p-3 border bg-light rounded' : ''),
+      class: comp.class || (['container', 'nav'].includes(type) ? 'canvas-container' : 'component-wrapper'),
       oddColumnColor: comp.oddColumnColor || '#f0f0f0',
       evenColumnColor: comp.evenColumnColor || '#ffffff',
       oddRowColor: comp.oddRowColor || '#e6f3ff',
@@ -254,16 +258,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       prepared.children = (comp.children || []).map((child: any) => this.prepareComponent(child));
     }
 
-    if (type === 'layout') {
-      prepared.columns = (comp.columns || []).map((col: any) => ({
-        ...col,
-        type: 'column',
-        id: col.id || this.generateUniqueId(),
-        class: col.class || 'col',
-        children: (col.children || []).map((child: any) => this.prepareComponent(child))
-      }));
-    }
-
     return prepared;
   }
 
@@ -275,16 +269,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     const ids: string[] = [];
     const collect = (list: DashboardComponent[]) => {
       (list || []).forEach(c => {
-        if (c && ['container', 'layout', 'nav', 'column'].includes(c.type) && c.id) {
-          if (!excludeId || c.id !== excludeId) ids.push(c.id);
+        if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
+          ids.push(c.id);
         }
         if (c.children?.length) collect(c.children);
-        if (c.columns?.length) {
-          c.columns.forEach((col: any) => {
-            if (col.id && (!excludeId || col.id !== excludeId)) ids.push(col.id);
-            if (col.children?.length) collect(col.children);
-          });
-        }
       });
     };
     collect(this.canvasComponents);
@@ -316,7 +304,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     let targetArray = this.canvasComponents;
     let parentComponent: DashboardComponent | null = null;
-    if (this.selectedComponent && ['container', 'nav', 'layout', 'column'].includes(this.selectedComponent.type)) {
+    if (this.selectedComponent && ['container', 'nav'].includes(this.selectedComponent.type)) {
       if (!this.selectedComponent.children) this.selectedComponent.children = [];
       targetArray = this.selectedComponent.children;
       parentComponent = this.selectedComponent;
@@ -332,12 +320,17 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     }
     targetArray.push(newContainer);
+    this.canvasComponents = [...this.canvasComponents]; // Ensure immutability
     if (parentComponent) {
       this.onComponentUpdated(parentComponent);
     }
+    // Always select the new container
     this.selectComponent(newContainer);
     this.updateConnectedLists();
+    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
     console.log('New Container Added and Selected:', newContainer.id, newContainer.type, 'Parent:', parentComponent?.id || 'none');
+    console.log('Canvas Components:', JSON.stringify(this.canvasComponents, null, 2));
   }
 
   initializeDefaultContainer() {
@@ -349,13 +342,16 @@ export class AppComponent implements OnInit, AfterViewInit {
       icon: this.getDefaultIcon('container')
     });
     this.canvasComponents = [defaultContainer];
-    console.log('Default Container Initialized:', this.canvasComponents);
+    // Always select the default container
+    this.selectComponent(defaultContainer);
+    this.updateConnectedLists();
+    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
+    console.log('Default Container Initialized and Selected:', defaultContainer.id);
+    console.log('Canvas Components:', JSON.stringify(this.canvasComponents, null, 2));
   }
 
-  drop(
-    event: CdkDragDrop<DashboardComponent[], DashboardComponent[]>,
-    targetContainer?: DashboardComponent
-  ) {
+  drop(event: CdkDragDrop<DashboardComponent[], DashboardComponent[]>, targetContainer?: DashboardComponent) {
     if (!event.previousContainer || !event.container) {
       console.error('Drop event invalid: missing container', event);
       return;
@@ -387,14 +383,15 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
       const newComp = this.prepareComponent(draggedComponent);
 
-      if (resolvedTarget && ['container', 'nav', 'layout', 'column'].includes(resolvedTarget.type)) {
+      if (resolvedTarget && ['container', 'nav'].includes(resolvedTarget.type)) {
         if (!resolvedTarget.children) resolvedTarget.children = [];
-        resolvedTarget.children.splice(event.currentIndex, 0, newComp);
+        resolvedTarget.children.push(newComp); // Append to end
         this.onComponentUpdated(resolvedTarget);
-        console.log('Added new component into container:', resolvedTarget.id, newComp.id);
+        console.log('Added new component into container:', resolvedTarget.id, newComp.id, newComp.type);
       } else {
-        this.canvasComponents.splice(event.currentIndex, 0, newComp);
-        console.log('Added new component into main canvas:', newComp.id);
+        this.canvasComponents.push(newComp); // Append to end
+        this.canvasComponents = [...this.canvasComponents]; // Ensure immutability
+        console.log('Added new component into main canvas:', newComp.id, newComp.type);
       }
       newCompOrMoved = newComp;
     } else if (event.previousContainer === event.container) {
@@ -407,21 +404,25 @@ export class AppComponent implements OnInit, AfterViewInit {
       console.log('Moved component:', newCompOrMoved.id, newCompOrMoved.type);
     }
 
-    if (newCompOrMoved) {
-      if (['container', 'nav', 'layout'].includes(newCompOrMoved.type)) {
-        this.selectComponent(newCompOrMoved);
-        console.log('Selected new/moved container:', newCompOrMoved.id, newCompOrMoved.type);
-      } else if (resolvedTarget && ['container', 'nav', 'layout', 'column'].includes(resolvedTarget.type)) {
-        this.selectComponent(resolvedTarget);
-        console.log('Retained target container selection:', resolvedTarget.id, resolvedTarget.type);
-      } else {
-        this.selectComponent(newCompOrMoved);
-        console.log('No valid container, selected new/moved component:', newCompOrMoved.id, newCompOrMoved.type);
-      }
+    // Ensure immutability for canvasComponents
+    this.canvasComponents = [...this.canvasComponents];
+
+    // Only select the target container if it's a container/nav, or the new component if it's a container/nav
+    if (newCompOrMoved && ['container', 'nav'].includes(newCompOrMoved.type)) {
+      this.selectComponent(newCompOrMoved);
+      console.log('Selected new container:', newCompOrMoved.id, newCompOrMoved.type);
+    } else if (resolvedTarget && ['container', 'nav'].includes(resolvedTarget.type)) {
+      this.selectComponent(resolvedTarget);
+      console.log('Selected target container:', resolvedTarget.id, resolvedTarget.type);
+    } else {
+      console.log('No container selected, keeping current selection:', this.selectedComponent?.id, this.selectedComponent?.type);
     }
 
     this.updateConnectedLists();
-    console.log('Dropped and selected:', this.selectedComponent?.id, this.selectedComponent?.type);
+    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
+    console.log('Dropped, selected:', this.selectedComponent?.id, this.selectedComponent?.type);
+    console.log('Canvas Components:', JSON.stringify(this.canvasComponents, null, 2));
   }
 
   findComponentById(id: string, list: DashboardComponent[]): DashboardComponent | null {
@@ -431,69 +432,81 @@ export class AppComponent implements OnInit, AfterViewInit {
         const found = this.findComponentById(id, comp.children);
         if (found) return found;
       }
-      if (comp.columns?.length) {
-        for (const col of comp.columns) {
-          const found = this.findComponentById(id, col.children || []);
-          if (found) return found;
-        }
-      }
     }
     return null;
   }
 
-  addColumn(layout: any) {
-    if (layout.columns.length < 5) {
-      layout.columns.push({
-        id: this.generateUniqueId(),
-        type: 'column',
-        class: 'col',
-        children: []
-      });
-      this.updateConnectedLists();
-    }
-  }
-
   selectComponent(comp: DashboardComponent) {
     if (this.selectedComponent?.id !== comp.id) {
-      this.selectedComponent = { ...comp };
+      this.selectedComponent = comp; // Use reference to maintain reactivity
       this.initializeCellControls();
       console.log('Selected Component:', this.selectedComponent.id, this.selectedComponent.type);
       this.changeDetectorRef.detectChanges();
+      this.changeDetectorRef.markForCheck();
     }
   }
 
-  onComponentUpdated(updatedComponent: DashboardComponent) {
-    const updateComponent = (components: DashboardComponent[]): boolean => {
-      for (let i = 0; i < components.length; i++) {
-        if (components[i].id === updatedComponent.id) {
-          components[i] = { ...updatedComponent };
-          return true;
-        }
-        if (components[i].children) {
-          if (updateComponent(components[i].children!)) {
-            return true;
-          }
-        }
-        if (components[i].columns && Array.isArray(components[i].columns)) {
-          for (const col of components[i].columns!) {
-            if (updateComponent(col.children || [])) {
-              return true;
-            }
-          }
-        }
+  addComponentToCanvas(comp: any) {
+    const newComp = this.prepareComponent(comp);
+    let targetArray = this.canvasComponents;
+    let parentComponent: DashboardComponent | null = null;
+
+    if (this.selectedComponent && ['container', 'nav'].includes(this.selectedComponent.type)) {
+      if (!this.selectedComponent.children) this.selectedComponent.children = [];
+      targetArray = this.selectedComponent.children;
+      parentComponent = this.selectedComponent;
+      console.log('Adding to selected container:', this.selectedComponent.id, this.selectedComponent.type);
+    } else {
+      const defaultContainer = this.canvasComponents[0];
+      if (defaultContainer && defaultContainer.children) {
+        targetArray = defaultContainer.children;
+        parentComponent = defaultContainer;
+        console.log('Falling back to default container:', defaultContainer.id);
+      } else {
+        console.warn('No valid parent container found, using root canvasComponents');
       }
-      return false;
+    }
+
+    targetArray.push(newComp);
+    this.canvasComponents = [...this.canvasComponents]; // Ensure immutability
+    if (parentComponent) {
+      this.onComponentUpdated(parentComponent);
+    }
+    // Only select the new component if it's a container or nav
+    if (['container', 'nav'].includes(newComp.type)) {
+      this.selectComponent(newComp);
+      console.log('Selected new container:', newComp.id, newComp.type);
+    } else {
+      console.log('Non-container component added, keeping current selection:', this.selectedComponent?.id, this.selectedComponent?.type);
+    }
+    this.updateConnectedLists();
+    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
+    console.log('After adding component, selected:', this.selectedComponent?.id, this.selectedComponent?.type);
+    console.log('Canvas Components:', JSON.stringify(this.canvasComponents, null, 2));
+  }
+
+  onComponentUpdated(updatedComponent: DashboardComponent) {
+    const updateComponent = (components: DashboardComponent[]): DashboardComponent[] => {
+      return components.map(comp => {
+        if (comp.id === updatedComponent.id) {
+          return { ...updatedComponent, children: comp.children ? [...comp.children] : comp.children };
+        }
+        if (comp.children) {
+          return { ...comp, children: updateComponent(comp.children) };
+        }
+        return comp;
+      });
     };
 
-    updateComponent(this.canvasComponents);
+    this.canvasComponents = updateComponent(this.canvasComponents);
     if (this.selectedComponent?.id === updatedComponent.id) {
-      this.selectedComponent = { ...updatedComponent };
+      this.selectedComponent = this.findComponentById(updatedComponent.id, this.canvasComponents);
     }
     this.initializeCellControls();
-    if (this.selectedComponent) {
-      console.log('Component updated, selected:', this.selectedComponent.id, this.selectedComponent.type);
-      this.changeDetectorRef.detectChanges();
-    }
+    console.log('Component updated, selected:', this.selectedComponent?.id, this.selectedComponent?.type);
+    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
   }
 
   getContrastColor(color: string): string {
@@ -509,7 +522,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   getComponentStyle(comp: DashboardComponent): { [key: string]: string | null } {
     const isContainerOrNav = comp.type === 'container' || comp.type === 'nav';
     const styleObj: { [key: string]: string } = {};
-    if (comp.style) {
+    if (typeof comp.style === 'string' && comp.style.trim()) {
       comp.style.split(';').forEach(s => {
         const [key, value] = s.split(':').map(part => part.trim());
         if (key && value) {
@@ -571,7 +584,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   getChildStyle(child: DashboardComponent, parent?: DashboardComponent): { [key: string]: string | null } {
     const styleObj: { [key: string]: string } = {};
-    if (child.style) {
+    if (typeof child.style === 'string' && child.style.trim()) {
       child.style.split(';').forEach(s => {
         const [key, value] = s.split(':').map(part => part.trim());
         if (key && value) {
@@ -626,7 +639,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     const newRows = [...this.selectedComponent.rows];
     newRows[rowIndex][cellIndex] = value;
     this.selectedComponent.rows = newRows;
+    this.onComponentUpdated(this.selectedComponent);
     this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
   }
 
   getHeaderCellColor(ci: number, child: any): string {
@@ -683,24 +698,21 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     const compName = this.selectedComponent.displayName || 'this component';
     if (confirm(`Are you sure you want to delete "${compName}"?`)) {
-      const deleteFromComponents = (components: DashboardComponent[]): boolean => {
-        for (let i = 0; i < components.length; i++) {
-          if (components[i].id === this.selectedComponent!.id) {
-            components.splice(i, 1);
-            return true;
+      const deleteFromComponents = (components: DashboardComponent[]): DashboardComponent[] => {
+        return components.filter(comp => {
+          if (comp.id === this.selectedComponent!.id) return false;
+          if (comp.children) {
+            comp.children = deleteFromComponents(comp.children);
           }
-          if (components[i].children) {
-            if (deleteFromComponents(components[i].children!)) {
-              return true;
-            }
-          }
-        }
-        return false;
+          return true;
+        });
       };
-      deleteFromComponents(this.canvasComponents);
+      this.canvasComponents = deleteFromComponents(this.canvasComponents);
       this.selectedComponent = null;
       this.updateConnectedLists();
       this.changeDetectorRef.detectChanges();
+      this.changeDetectorRef.markForCheck();
+      console.log('Canvas Components after delete:', JSON.stringify(this.canvasComponents, null, 2));
     }
   }
 
@@ -712,52 +724,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       next: () => alert('UI saved successfully to ui.json'),
       error: (err) => console.error('Error saving JSON:', err)
     });
-  }
-
-  startResize(event: MouseEvent, col: any) {
-    event.stopPropagation();
-    col.showOverlay = true;
-    col.width = '33%';
-    col.height = 'auto';
-  }
-
-  addComponentToCanvas(comp: any) {
-    const newComp = this.prepareComponent(comp);
-    let targetArray = this.canvasComponents;
-    let parentComponent: DashboardComponent | null = null;
-
-    if (this.selectedComponent && ['container', 'nav', 'layout', 'column'].includes(this.selectedComponent.type)) {
-      if (!this.selectedComponent.children) this.selectedComponent.children = [];
-      targetArray = this.selectedComponent.children;
-      parentComponent = this.selectedComponent;
-      console.log('Adding to selected container:', this.selectedComponent.id, this.selectedComponent.type);
-    } else {
-      const defaultContainer = this.canvasComponents[0];
-      if (defaultContainer && defaultContainer.children) {
-        targetArray = defaultContainer.children;
-        parentComponent = defaultContainer;
-        console.log('Falling back to default container:', defaultContainer.id);
-      } else {
-        console.warn('No valid parent container found, using root canvasComponents');
-      }
-    }
-
-    targetArray.push(newComp);
-    if (parentComponent) {
-      this.onComponentUpdated(parentComponent);
-    }
-    if (['container', 'nav', 'layout'].includes(newComp.type)) {
-      this.selectComponent(newComp);
-      console.log('Selected new container:', newComp.id, newComp.type);
-    } else if (parentComponent) {
-      this.selectComponent(parentComponent);
-      console.log('Retained parent container selection:', parentComponent.id, parentComponent.type);
-    } else {
-      this.selectComponent(newComp);
-      console.log('No parent, selected new component:', newComp.id, newComp.type);
-    }
-    this.updateConnectedLists();
-    console.log('After adding component, selected:', this.selectedComponent?.id, this.selectedComponent?.type);
   }
 
   onSave() {
@@ -775,8 +741,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     return this.selectedComponent?.options || [];
   }
 
-  trackByIndex(index: number, item: any): number {
-    return index;
+  trackById(index: number, comp: DashboardComponent): string {
+    return comp.id;
   }
 
   onComponentAdded(comp: any): void {
