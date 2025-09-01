@@ -1,12 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
+interface ComponentItem {
+  id: string;
+  type: string;
+  value?: string;
+  text?: string;
+  children?: ComponentItem[];
+}
 
 interface Page {
+  id: string;
   name: string;
-  components: { type: string; value?: string; label?: string }[];
+  components: ComponentItem[];
+  showSettings?: boolean;
 }
 
 @Component({
@@ -19,150 +30,232 @@ interface Page {
 export class PageManagerComponent {
   pages: Page[] = [];
   selectedPage: Page | null = null;
-  apiUrl = 'http://localhost:3000/ui'; // Backend API endpoint
+  selectedComponent: ComponentItem | null = null;
 
-  // For undo/redo
-  history: Page[][] = [];
-  future: Page[][] = [];
+  showModal: boolean = false;
+  newPageName: string = '';
+  isSettingsMode: boolean = false; // true = Page Settings modal
 
-  constructor(private http: HttpClient) {}
+  // Tooltip & breadcrumb highlight
+  showTooltip: boolean = false;
+  highlightedPage: Page | null = null;
+
+  apiUrl: string = 'http://localhost:3000/ui';
+  kebabSvg: SafeHtml;
+
+  // Modal positioning
+  modalPosition = { top: '60px', left: '150px' };
+
+  constructor(
+    private http: HttpClient,
+    private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.kebabSvg = this.sanitizer.bypassSecurityTrustHtml(
+      '<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">' +
+      '<path fill-rule="evenodd" d="M9,11 L9,13 L7,13 L7,11 L9,11 Z M13,11 L13,13 L11,13 L11,11 L13,11 Z M17,11 L17,13 L15,13 L15,11 L17,11 Z"></path></svg>'
+    );
+  }
 
   ngOnInit() {
     this.loadPages();
-    this.setupKeyboardShortcuts();
   }
 
-  // -------- PAGE ACTIONS --------
-  addPage() {
-    const newPage: Page = { name: `Untitled-${this.pages.length + 1}`, components: [] };
+  // ---------------- PAGE ACTIONS ----------------
+
+  openNewPageModal() {
+    this.isSettingsMode = false;
+    this.newPageName = '';
+    this.showModal = true;
+
+    // Position modal near Add Page button
+    setTimeout(() => {
+      const btn = document.querySelector<HTMLButtonElement>('button.btn-secondary');
+      if (btn) {
+        const rect = btn.getBoundingClientRect();
+        this.modalPosition = { top: rect.bottom + 'px', left: rect.left + 'px' };
+      }
+    }, 0);
+
+    this.cdr.detectChanges();
+  }
+
+ createPageOnEnter(event: Event) {
+  const keyboardEvent = event as KeyboardEvent; // cast here
+  keyboardEvent.preventDefault(); // optional, stops form submission
+  this.createPage();
+}
+
+
+  createPage() {
+    if (!this.newPageName.trim()) return;
+
+    const newPage: Page = {
+      id: this.generateUUID(),
+      name: this.newPageName.trim(),
+      components: [], // No default container; canvas is always present
+      showSettings: false
+    };
+
     this.pages.push(newPage);
     this.selectedPage = newPage;
-    this.saveState();
+    this.showModal = false;
     this.savePages();
+    this.cdr.detectChanges();
+
+    this.showTooltipForUser();
   }
 
-  renamePage(page: Page, newName: string) {
-    page.name = newName;
-    this.saveState();
-    this.savePages();
+  selectPage(page: Page) {
+    this.selectedPage = page;
+    this.selectedComponent = null;
+    this.cdr.detectChanges();
   }
 
-  deletePage(page: Page) {
-    this.pages = this.pages.filter(p => p !== page);
-    this.selectedPage = this.pages.length ? this.pages[0] : null;
-    this.saveState();
-    this.savePages();
+  openPageSettingsModal(page: Page) {
+    this.selectedPage = page;
+    this.isSettingsMode = true;
+    this.showModal = true;
+
+    // Highlight breadcrumb briefly
+    this.highlightedPage = page;
+    setTimeout(() => (this.highlightedPage = null), 1000);
+    this.cdr.detectChanges();
   }
 
-  duplicatePage(page: Page) {
-    const copy = JSON.parse(JSON.stringify(page));
-    copy.name = page.name + ' Copy';
-    this.pages.push(copy);
-    this.saveState();
+  closeModal() {
+    this.showModal = false;
+  }
+
+  showTooltipForUser() {
+    this.showTooltip = true;
+    setTimeout(() => (this.showTooltip = false), 3000);
+  }
+
+  // ---------------- COMPONENT / CANVAS ACTIONS ----------------
+
+  addNewContainer() {
+    if (!this.selectedPage) return;
+
+    const newContainer: ComponentItem = {
+      id: this.generateUUID(),
+      type: 'container',
+      children: []
+    };
+
+    this.selectedPage.components.push(newContainer);
     this.savePages();
+    this.cdr.detectChanges();
   }
 
   addComponent(type: string) {
-    if (this.selectedPage) {
-      this.selectedPage.components.push({ type, value: `${type} content` });
-      this.saveState();
-      this.savePages();
-    }
+    if (!this.selectedPage) return;
+
+    const newComp: ComponentItem = {
+      id: this.generateUUID(),
+      type,
+      value: `${type} content`
+    };
+
+    this.selectedPage.components.push(newComp);
+    this.savePages();
+    this.cdr.detectChanges();
   }
 
-  drop(event: CdkDragDrop<any[]>) {
-    if (this.selectedPage) {
-      moveItemInArray(this.selectedPage.components, event.previousIndex, event.currentIndex);
-      this.saveState();
-      this.savePages();
-    }
+  selectComponent(comp: ComponentItem) {
+    this.selectedComponent = comp;
+    this.cdr.detectChanges();
   }
 
-  // -------- SAVE / LOAD --------
+  drop(event: CdkDragDrop<ComponentItem[]>) {
+    if (!this.selectedPage) return;
+
+    const components = [...this.selectedPage.components];
+    moveItemInArray(components, event.previousIndex, event.currentIndex);
+    this.selectedPage.components = components;
+    this.savePages();
+    this.cdr.detectChanges();
+  }
+
+  getConnectedLists(): string[] {
+    return this.pages.map(p => p.id);
+  }
+
+  // ---------------- PAGE SETTINGS ----------------
+
+  renamePage(page: Page | null) {
+    if (!page) return;
+    const newName = prompt('Enter new page name', page.name);
+    if (newName) page.name = newName;
+    this.savePages();
+    this.closeModal();
+  }
+
+  duplicatePage(page: Page | null) {
+    if (!page) return;
+    const copy: Page = {
+      ...JSON.parse(JSON.stringify(page)),
+      id: this.generateUUID(),
+      name: page.name + ' Copy'
+    };
+    this.pages.push(copy);
+    this.savePages();
+    this.closeModal();
+  }
+
+  deletePage(page: Page | null) {
+    if (!page) return;
+    this.pages = this.pages.filter(p => p !== page);
+    this.selectedPage = this.pages.length ? this.pages[0] : null;
+    this.savePages();
+    this.closeModal();
+  }
+
+  // ---------------- SAVE / LOAD ----------------
+
   savePages() {
-    this.http.post(this.apiUrl, this.pages).subscribe(() => console.log('Saved to ui.json'));
+    this.http.post(this.apiUrl, this.pages).subscribe({
+      next: () => console.log('Saved to UI backend'),
+      error: err => console.error('Failed to save pages:', err)
+    });
   }
 
   loadPages() {
-    this.http.get<Page[]>(this.apiUrl).subscribe(data => {
-      this.pages = data || [];
-      this.selectedPage = this.pages.length ? this.pages[0] : null;
-      this.saveState(true); // save initial state, no reset
-    });
-  }
-
-  // -------- HISTORY MANAGEMENT (UNDO/REDO) --------
-  private saveState(initial = false) {
-    if (!initial) {
-      this.history.push(JSON.parse(JSON.stringify(this.pages)));
-      this.future = []; // clear redo stack when new action happens
-    }
-  }
-
-  undo() {
-    if (this.history.length > 0) {
-      this.future.push(JSON.parse(JSON.stringify(this.pages)));
-      this.pages = this.history.pop() || [];
-      this.selectedPage = this.pages.length ? this.pages[0] : null;
-      this.savePages();
-    }
-  }
-
-  redo() {
-    if (this.future.length > 0) {
-      this.history.push(JSON.parse(JSON.stringify(this.pages)));
-      this.pages = this.future.pop() || [];
-      this.selectedPage = this.pages.length ? this.pages[0] : null;
-      this.savePages();
-    }
-  }
-
-  // -------- KEYBOARD SHORTCUTS --------
-  setupKeyboardShortcuts() {
-    window.addEventListener('keydown', (event) => {
-      if (event.ctrlKey && event.key === 'n') { event.preventDefault(); this.addPage(); }     // Ctrl+N → New Page
-      if (event.ctrlKey && event.key === 's') { event.preventDefault(); this.savePages(); }   // Ctrl+S → Save
-      if (event.ctrlKey && event.key === 'd' && this.selectedPage) { event.preventDefault(); this.duplicatePage(this.selectedPage); } // Ctrl+D → Duplicate
-      if (event.key === 'Delete' && this.selectedPage) { event.preventDefault(); this.deletePage(this.selectedPage); } // Delete → Delete Page
-      if (event.ctrlKey && event.key.toLowerCase() === 'z') { event.preventDefault(); this.undo(); } // Ctrl+Z → Undo
-      if (event.ctrlKey && event.key.toLowerCase() === 'y') { event.preventDefault(); this.redo(); } // Ctrl+Y → Redo
-      if (event.ctrlKey && event.key.toLowerCase() === 'r' && this.selectedPage) { // Ctrl+R → Rename
-        event.preventDefault();
-        const newName = prompt('Enter new page name:', this.selectedPage.name);
-        if (newName) this.renamePage(this.selectedPage, newName);
-      }
-      if (event.ctrlKey && event.key === 'ArrowRight') { // Ctrl+→ → Next Page
-        event.preventDefault();
-        this.selectNextPage();
-      }
-      if (event.ctrlKey && event.key === 'ArrowLeft') { // Ctrl+← → Previous Page
-        event.preventDefault();
-        this.selectPrevPage();
+    this.http.get<Page[]>(this.apiUrl).subscribe({
+      next: data => {
+        this.pages = data || [];
+        this.selectedPage = this.pages.length ? this.pages[0] : null;
+        this.cdr.detectChanges();
+      },
+      error: err => {
+        console.error('Failed to load pages:', err);
+        this.pages = [];
+        this.selectedPage = null;
+        this.cdr.detectChanges();
       }
     });
   }
 
-  private selectNextPage() {
-    if (this.selectedPage && this.pages.length > 1) {
-      const index = this.pages.indexOf(this.selectedPage);
-      const nextIndex = (index + 1) % this.pages.length;
-      this.selectedPage = this.pages[nextIndex];
-    }
+  // ---------------- UTILITIES ----------------
+
+  generateUUID(): string {
+    return 'xxxx-xxxx-xxxx'.replace(/[x]/g, () => (Math.random() * 16 | 0).toString(16));
   }
 
-  private selectPrevPage() {
-    if (this.selectedPage && this.pages.length > 1) {
-      const index = this.pages.indexOf(this.selectedPage);
-      const prevIndex = (index - 1 + this.pages.length) % this.pages.length;
-      this.selectedPage = this.pages[prevIndex];
-    }
-  }
+  // ---------------- KEYBOARD SHORTCUTS ----------------
 
-  renamePagePrompt(page: Page) {
-  const newName = window.prompt('Rename page:', page.name);
-  if (newName && newName.trim()) {
-    this.renamePage(page, newName.trim());
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardShortcuts(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key.toLowerCase() === 'n') {
+      event.preventDefault();
+      this.openNewPageModal();
+    }
+    if (event.key === 'Delete' && this.selectedPage) {
+      event.preventDefault();
+      this.pages = this.pages.filter(p => p !== this.selectedPage);
+      this.selectedPage = this.pages.length ? this.pages[0] : null;
+      this.savePages();
+      this.cdr.detectChanges();
+    }
   }
 }
-
-} 

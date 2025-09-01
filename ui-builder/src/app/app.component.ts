@@ -751,3 +751,4 @@ export class AppComponent implements OnInit, AfterViewInit {
     console.log('Selected after adding from sidebar:', this.selectedComponent?.id, this.selectedComponent?.type);
   }
 }
+
