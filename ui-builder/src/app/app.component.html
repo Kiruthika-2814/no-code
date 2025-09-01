@@ -18,10 +18,13 @@
       <!-- Center Canvas Area -->
       <div [ngClass]="{'col-10': !isCollapsed, 'col-11': isCollapsed}" style="height: 100%; overflow-y: auto;">
 <<<<<<< HEAD
+<<<<<<< HEAD
         
 =======
         <app-page-manager></app-page-manager>
 >>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a
+=======
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
         <h5>Canvas</h5>
         <button class="btn btn-primary mb-3" (click)="addNewContainer()">Add New Container</button>
 
@@ -54,7 +57,11 @@
                 <div cdkDropList
                      [id]="comp.id"
                      [cdkDropListData]="comp.children || []"
+<<<<<<< HEAD
                      [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
+=======
+                     [cdkDropListConnectedTo]="getConnectedLists(comp)"
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
                      (cdkDropListDropped)="drop($event, comp)"
                      (click)="selectComponent(comp); $event.stopPropagation()"
                      class="p-2 border rounded position-relative"
@@ -91,6 +98,7 @@
                      [id]="comp.id"
                      [cdkDropListData]="comp.children || []"
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
                      [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
 =======
@@ -103,6 +111,9 @@
 =======
                      [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
 >>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a
+=======
+                     [cdkDropListConnectedTo]="getConnectedLists(comp)"
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
                      (cdkDropListDropped)="drop($event, comp)"
                      (click)="selectComponent(comp); $event.stopPropagation()"
                      class="p-2 border rounded position-relative"
@@ -314,7 +325,11 @@
     </div>
   </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 </div>
 =======
 </div>
 >>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a
+=======
+</div>
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757

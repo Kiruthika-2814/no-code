@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <ng-container *ngIf="selectedComponent?.type === 'container' || selectedComponent?.type === 'nav'">
   <div class="divider my-2"><span>Container Layout</span></div>
 
@@ -119,4 +120,43 @@
     <input type="color" class="form-control form-control-color"
            [(ngModel)]="selectedComponent!.background" (ngModelChange)="updateCanvasComponent()" />
   </div>
+=======
+<!-- Container & Nav -->
+<ng-container *ngIf="selectedComponent?.type === 'container' || selectedComponent?.type === 'nav'">
+  <div class="divider my-2"><span>Container Layout</span></div>
+  <label class="form-label">Direction</label>
+  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.flexDirection" (ngModelChange)="updateCanvasComponent()">
+    <option *ngFor="let dir of flexDirections" [value]="dir">{{ dir }}</option>
+  </select>
+  <label class="form-label">Justify Content</label>
+  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.justifyContent" (ngModelChange)="updateCanvasComponent()">
+    <option *ngFor="let j of justifyContents" [value]="j">{{ j }}</option>
+  </select>
+  <label class="form-label">Align Items</label>
+  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.alignItems" (ngModelChange)="updateCanvasComponent()">
+    <option *ngFor="let a of alignItems" [value]="a">{{ a }}</option>
+  </select>
+  <label class="form-label">Gap (px)</label>
+  <input type="number" min="0" class="form-control mb-2" [(ngModel)]="selectedComponent!.gap" (ngModelChange)="updateCanvasComponent()" />
+  <label class="form-label">Padding</label>
+  <input type="text" class="form-control mb-2" [(ngModel)]="selectedComponent!.padding" (ngModelChange)="updateCanvasComponent()" placeholder="e.g. 16px 24px" />
+  <label class="form-label">Background</label>
+  <input type="color" class="form-control form-control-color mb-2" [(ngModel)]="selectedComponent!.background" (ngModelChange)="updateCanvasComponent()" />
+  <label class="form-label">Border Radius</label>
+  <input type="text" class="form-control mb-2" [(ngModel)]="selectedComponent!.borderRadius" (ngModelChange)="updateCanvasComponent()" placeholder="e.g. 8px" />
+  <label class="form-label">Shadow</label>
+  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.shadow" (ngModelChange)="updateCanvasComponent()">
+    <option value="none">None</option>
+    <option value="sm">Small</option>
+    <option value="md">Medium</option>
+    <option value="lg">Large</option>
+  </select>
+  <label class="form-label">Overflow</label>
+  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.overflow" (ngModelChange)="updateCanvasComponent()">
+    <option value="visible">Visible</option>
+    <option value="hidden">Hidden</option>
+    <option value="auto">Auto</option>
+    <option value="scroll">Scroll</option>
+  </select>
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
 </ng-container>

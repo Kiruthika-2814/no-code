@@ -1,5 +1,9 @@
 [
+<<<<<<< HEAD
 {
+=======
+  {
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
     "pageName": "homePage",
     "sidebarGroups": [
       {
@@ -142,6 +146,37 @@
             "icon": "bi bi-textarea-resize"
           },
           {
+<<<<<<< HEAD
+=======
+            "type": "name-group",
+            "id": "nameFields",
+            "displayName": "Name Fields",
+            "class": "d-flex flex-row gap-2",
+           
+            "children": [
+              {
+                "type": "input",
+                "id": "firstName",
+                "displayName": "First Name",
+                "label": "First Name",
+                "placeholder": "Enter first name",
+                
+                "class": "form-control"
+              },
+              {
+                "type": "input",
+                "id": "lastName",
+                "displayName": "Last Name",
+                "label": "Last Name",
+                "placeholder": "Enter last name",
+                
+                "class": "form-control"
+              }
+            ]
+          },
+          
+          {
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
             "type": "select",
             "id": "dropdownExample",
             "displayName": "Dropdown",
@@ -253,4 +288,10 @@
       }
     ]
   }
+<<<<<<< HEAD
 ]
+=======
+]  
+
+ 
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757

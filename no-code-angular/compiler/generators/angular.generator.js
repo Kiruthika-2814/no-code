@@ -188,4 +188,10 @@ ${component.children?.map(child => this.generateComponentHtml(child)).join('\n')
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join('');
     }
+<<<<<<< HEAD
 }
+=======
+}
+exports.AngularGenerator = AngularGenerator;
+//# sourceMappingURL=angular.generator.js.map
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
