@@ -1,0 +1,62 @@
+/* =======================================
+   1. Bootstrap variable overrides first
+   ======================================= */
+@import './settings/_customVariables.scss';
+
+/* =======================================
+   2. Theme-specific variables
+   ======================================= */
+@import './settings/themeVariables';
+
+/* =======================================
+   3. Bootstrap core (from node_modules)
+   ======================================= */
+@import '~bootstrap/scss/bootstrap';
+
+/* =======================================
+   4. Theme layouts (sidebar, header, footer)
+   ======================================= */
+@import './themes/layouts/menu-lite';
+@import './themes/layouts/menu-ng';
+@import './themes/layouts/pc-footer';
+
+/* =======================================
+   5. Theme components
+   ======================================= */
+@import './themes/component/button';
+@import './themes/component/badge';
+@import './themes/component/card';
+@import './themes/component/component';
+@import './themes/component/form';
+@import './themes/component/dropdown';
+@import './themes/component/radiobox-checkbox';
+@import './themes/component/switches';
+
+/* =======================================
+   6. Global body styling
+   ======================================= */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  margin: 0;
+}
+
+/* =======================================
+   7. Form inputs basic styling
+   ======================================= */
+input, textarea, select {
+  font-family: inherit;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* =======================================
+   8. Container styling example
+   ======================================= */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: lightblue; /* For testing */
+}

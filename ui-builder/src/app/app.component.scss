@@ -1,0 +1,265 @@
+/* Import Bootstrap SCSS files */
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+@import "../../bootstrap/src/assets/scss/settings/bootstrap-variables";
+@import "../../bootstrap/src/assets/scss/settings/color-variables";
+@import "../../bootstrap/src/assets/scss/settings/theme-variables";
+
+/* Root variables updated with SCSS colors */
+:root {
+  --background: #{$gray-100};
+  --text-color: #{$gray-900};
+  --border-color: #{$gray-300};
+  --hover-color: #{$blue-500};
+}
+
+[data-theme="dark"] {
+  --background: #{$gray-900};
+  --text-color: #{$gray-100};
+  --border-color: #{$gray-600};
+  --hover-color: #{$blue-400};
+}
+
+/* Canvas List */
+#canvasList {
+  min-height: calc(100vh - 150px);
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: #fbfcf8;
+  color: var(--text-color);
+}
+
+/* Scrollbar styling */
+#canvasList::-webkit-scrollbar {
+  width: 8px;
+}
+#canvasList::-webkit-scrollbar-track {
+  background: #{$gray-200};
+  border-radius: 4px;
+}
+#canvasList::-webkit-scrollbar-thumb {
+  background: #{$gray-600};
+  border-radius: 4px;
+}
+#canvasList::-webkit-scrollbar-thumb:hover {
+  background: #{$blue-500};
+}
+
+/* Component Wrapper (for all components) */
+.component-wrapper {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 100px;
+  min-height: 40px;
+  border-radius: 6px;
+  background: #f8f9fa;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  padding: 8px;
+}
+
+.component-wrapper:hover {
+  background: $blue-100;
+  transform: scale(1.005);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.component-wrapper.border {
+  border: 2px solid $blue-400 !important;
+  background: $blue-100;
+}
+
+/* Canvas Container */
+.canvas-container {
+  position: relative;
+  min-width: 300px;
+  min-height: 150px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 12px;
+}
+
+/* Column */
+.column {
+  position: relative;
+  min-width: 100px;
+  min-height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f9f9f9;
+  padding: 8px;
+}
+
+.column:hover {
+  background: $blue-100; /* Changed from $blue-50 to $blue-100 */
+}
+
+/* Resize Handle */
+.resize-handle {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  cursor: se-resize;
+  background: $blue-500;
+  border-radius: 50%;
+  z-index: 100;
+  transition: background 0.2s ease;
+}
+
+.resize-handle:hover {
+  background: $blue-700;
+  transform: scale(1.2);
+}
+
+
+
+/* Loading State */
+.component-wrapper.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.component-wrapper.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+}
+@keyframes spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pc-sidebar {
+    width: 200px;
+    font-size: 12px;
+  }
+  .component-wrapper, .canvas-container, .column {
+    min-width: 200px;
+    min-height: 100px;
+  }
+  #canvasList {
+    gap: 8px;
+    padding: 8px;
+  }
+}
+@media (max-width: 576px) {
+  .pc-sidebar {
+    width: 100%;
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  #canvasList {
+    flex-direction: column;
+  }
+}
+
+/* General Transitions */
+.nav-link, .component-wrapper, .canvas-container, .column {
+  transition: all 0.3s ease;
+}
+
+/* Checkbox and Radio Group Labels */
+.form-check-input {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  -moz-appearance: auto !important;
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.25em;
+  cursor: pointer;
+}
+
+.form-check-label {
+  color: #212529;
+  line-height: 1.5em;
+  padding-left: 0.4em;
+}
+
+/* Parent button */
+.btn-primary {
+  position: relative;
+  background: linear-gradient(90deg, #007bff, #00c6ff);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  overflow: visible;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #0056b3, #0099cc);
+  transform: scale(1.05);
+}
+
+/* Delete button */
+.btn-danger {
+  z-index: 10;
+}
+
+/* Form Controls */
+.form-control {
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border: 1px solid #ddd;
+  transition: all 0.2s ease;
+}
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.4);
+}
+
+
+/* Toggle button style */
+button.rounded-circle {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: rgba(255, 255, 255, 0.25);
+  border: none;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+button.rounded-circle:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+/* Drag-Drop Styles */
+.cdk-drag-placeholder {
+  border: 2px dashed $blue-400 !important;
+  background: rgba(0, 123, 255, 0.1);
+  border-radius: 6px;
+  opacity: 0.5;
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  background: #fff;
+  opacity: 0.9;
+}

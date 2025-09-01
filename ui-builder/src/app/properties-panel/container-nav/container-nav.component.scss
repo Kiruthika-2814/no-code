@@ -1,0 +1,103 @@
+.app-wrapper {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.expanded-sidebar {
+  width: 100%;
+  padding: 15px;
+}
+
+.collapsed-sidebar {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-expanded {
+  width: 150px;
+}
+
+.logo-collapsed {
+  width: 50px;
+}
+
+.sidebar-toggle {
+  display: block;
+  margin: 0 auto;
+}
+
+.search-box-wrapper {
+  position: relative;
+}
+
+.search-box {
+  width: 100%;
+  padding-left: 35px;
+  height: 35px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.pc-sidebar {
+  overflow-y: auto;
+  height: calc(100% - 150px);
+}
+
+.pc-menu-group .nav-link {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  color: #333;
+}
+
+.pc-menu-group .nav-link:hover {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.canvas-item {
+  position: relative;
+}
+
+.canvas-child {
+  position: relative;
+}
+
+.properties-panel {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  width: 350px; /* Increased width for better usability */
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 2000; /* Increased z-index to ensure visibility */
+  padding: 10px;
+}
+
+.properties-panel.hidden {
+  display: none; /* Ensure hidden class is respected */
+}
+
+.toast-message {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 3000;
+}
+
+.toast-message.show {
+  opacity: 1;
+}

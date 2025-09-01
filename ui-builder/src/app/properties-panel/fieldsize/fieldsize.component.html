@@ -1,0 +1,56 @@
+<div elname="field-size-elem" class="field-size-container">
+  <label class="fmActTitle">Field Size</label>
+  <div class="butTab" elname="fieldInpSize">
+    <span elname="SMALL" 
+          class="size-option" 
+          [class.selected]="selectedSize === 'Small'" 
+          (click)="setSize('Small')">
+      <em>Small</em>
+    </span>
+    <span elname="MEDIUM" 
+          class="size-option" 
+          [class.selected]="selectedSize === 'Medium'" 
+          (click)="setSize('Medium')">
+      <em>Medium</em>
+    </span>
+    <span elname="LARGE" 
+          class="size-option lastBox" 
+          [class.selected]="selectedSize === 'Large'" 
+          (click)="setSize('Large')">
+      <em>Large</em>
+    </span>
+    <span elname="CUSTOMIZE" 
+          class="size-option" 
+          [class.selected]="selectedSize === 'Customize'" 
+          (click)="setSize('Customize')">
+      <em>Customize</em>
+    </span>
+    <div class="zf-clearBoth"></div>
+  </div>
+  <div *ngIf="selectedSize === 'Customize'" class="custom-inputs">
+    <label class="zf-labelName">Width:</label>
+    <input type="number" 
+           class="zf-form-sBox" 
+           [(ngModel)]="customWidth" 
+           (input)="applyCustomSize()"
+           (keydown)="handleKeyDown($event, 'width')"
+           placeholder="Width">
+    <select class="zf-form-sBox" 
+            [(ngModel)]="customWidthUnit" 
+            (change)="applyCustomSize()">
+      <option *ngFor="let unit of units" [value]="unit">{{ unit }}</option>
+    </select>
+    <label class="zf-labelName">Height:</label>
+    <input type="number" 
+           class="zf-form-sBox" 
+           [(ngModel)]="customHeight" 
+           (input)="applyCustomSize()"
+           (keydown)="handleKeyDown($event, 'height')"
+           placeholder="Height">
+    <select class="zf-form-sBox" 
+            [(ngModel)]="customHeightUnit" 
+            (change)="applyCustomSize()">
+      <option *ngFor="let unit of units" [value]="unit">{{ unit }}</option>
+    </select>
+  </div>
+</div>

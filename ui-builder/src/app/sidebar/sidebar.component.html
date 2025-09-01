@@ -1,0 +1,73 @@
+<div [ngClass]="{'col-2': !isCollapsed, 'col-1': isCollapsed}" 
+     style="height: 100%; transition: width 0.3s;">
+  <div [ngClass]="{'collapsed-sidebar': isCollapsed, 'expanded-sidebar': !isCollapsed}" 
+       style="height: 100%;">
+
+    <!-- Logo -->
+    <div class="d-flex align-items-center mb-3">
+      <img src="img/sieger_logo.png" alt="SIEGER Logo"
+           [ngClass]="{'logo-collapsed': isCollapsed, 'logo-expanded': !isCollapsed}">
+    </div>
+
+    <!-- Toggle Button -->
+    <button class="btn btn-light rounded-circle mb-3 sidebar-toggle"
+            (click)="toggleSidebar()"
+            aria-label="Toggle sidebar">
+      <i class="bi" [ngClass]="isCollapsed ? 'bi-arrow-right-circle' : 'bi-arrow-left-circle'"></i>
+    </button>
+
+    <!-- Title -->
+    <h5 *ngIf="!isCollapsed">Components</h5>
+
+    <!-- Search Box -->
+    <div *ngIf="!isCollapsed" class="position-relative mb-2 search-box-wrapper">
+      <span class="position-absolute top-50 start-0 translate-middle-y ps-2 text-muted">
+        <i class="bi bi-search"></i>
+      </span>
+      <input type="text" class="search-box ps-5"
+             placeholder="Search components..."
+             [(ngModel)]="searchTerm">
+    </div>
+
+    <!-- Sidebar Groups -->
+    <div cdkDropList id="sidebarList"
+         [cdkDropListConnectedTo]="sidebarConnectedTo"
+         class="pc-sidebar">
+
+      <div class="navbar-content mt-3">
+
+        <ng-container *ngFor="let group of filteredSidebarGroups">
+
+          <!-- Divider -->
+          <hr *ngIf="group.type === 'divider'" 
+              [ngClass]="group.class"
+              class="my-1">
+
+          <!-- Component Group -->
+          <div *ngIf="group.groupName" class="pc-menu-group">
+
+            <!-- Group Title -->
+            <h6 class="text-muted small ps-2 mb-1" *ngIf="!isCollapsed">{{ group.groupName }}</h6>
+
+            <ul class="nav flex-column mb-2">
+              <li *ngFor="let comp of group.components; trackBy: trackByIndex"
+                  class="nav-item"
+                  cdkDrag
+                  [cdkDragData]="comp"
+                  (click)="addComponentToCanvas(comp)">
+                <a href="javascript:void(0)" class="nav-link"
+                   [attr.title]="isCollapsed ? comp.displayName : null"
+                   tabindex="0">
+                  <i [class]="comp.icon + ' me-2 fs-6'"></i>
+                  <span *ngIf="!isCollapsed">{{ comp.displayName }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+</div>

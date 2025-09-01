@@ -1,0 +1,10 @@
+<!-- Video -->
+<ng-container *ngIf="selectedComponent?.type === 'video'">
+  <div class="divider my-2"><span>Video</span></div>
+  <label>Video Source</label>
+  <input type="text" class="form-control mb-2" [(ngModel)]="selectedComponent!.src" (ngModelChange)="updateCanvasComponent()" placeholder="Enter video URL" />
+  <label class="me-2">Controls</label>
+  <input type="checkbox" class="form-check-input me-3" [(ngModel)]="selectedComponent!.controls" (ngModelChange)="updateCanvasComponent()" />
+  <label class="me-2">Autoplay</label>
+  <input type="checkbox" class="form-check-input" [(ngModel)]="selectedComponent!.autoplay" (ngModelChange)="updateCanvasComponent()" />
+</ng-container>

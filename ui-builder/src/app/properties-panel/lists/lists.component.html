@@ -1,0 +1,14 @@
+<!-- Lists -->
+<div class="mb-3" *ngIf="isTextEditable()">
+  <label class="form-label">Lists</label><br>
+  <button class="btn btn-sm btn-outline-dark me-1"
+          [class.active]="selectedComponent?.listType === 'unordered'"
+          (click)="applyList('ul')" title="Bulleted List (Ctrl+Shift+U)">
+    <i class="fas fa-list-ul"></i>
+  </button>
+  <button class="btn btn-sm btn-outline-dark"
+          [class.active]="selectedComponent?.listType === 'ordered'"
+          (click)="applyList('ol')" title="Numbered List (Ctrl+Shift+O)">
+    <i class="fas fa-list-ol"></i>
+  </button>
+</div>

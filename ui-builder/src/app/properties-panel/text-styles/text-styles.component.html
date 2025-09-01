@@ -1,0 +1,34 @@
+<!-- Text Styles -->
+<div class="mb-3" *ngIf="isTextEditable()">
+  <label class="form-label">Text Style</label>
+  <div class="text-style-group">
+    
+    <!-- Bold -->
+    <button type="button" class="text-style-btn"
+            aria-label="Bold"
+            [class.active]="selectedComponent?.fontWeight === 'bold'"
+            (click)="toggleBold()"
+            appTooltip="Bold (Ctrl+B)">
+      <i class="fas fa-bold"></i>
+    </button>
+
+    <!-- Italic -->
+    <button type="button" class="text-style-btn"
+            aria-label="Italic"
+            [class.active]="selectedComponent?.fontStyle === 'italic'"
+            (click)="toggleItalic()"
+            appTooltip="Italic (Ctrl+I)">
+      <i class="fas fa-italic"></i>
+    </button>
+
+    <!-- Underline -->
+    <button type="button" class="text-style-btn"
+            aria-label="Underline"
+            [class.active]="selectedComponent?.textDecoration === 'underline'"
+            (click)="toggleUnderline()"
+            appTooltip="Underline (Ctrl+U)">
+      <i class="fas fa-underline"></i>
+    </button>
+
+  </div>
+</div>

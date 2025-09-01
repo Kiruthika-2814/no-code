@@ -1,0 +1,5 @@
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, #ccc 1px, transparent 1px),
+                    linear-gradient(to bottom, #ccc 1px, transparent 1px);
+  background-size: calc(100% / var(--columns)) calc(100% / var(--rows));
+}

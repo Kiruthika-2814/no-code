@@ -1,0 +1,21 @@
+<!-- Font Size (slider + numeric, synced) -->
+<div class="mb-3" *ngIf="isTextEditable()">
+  <label class="form-label">Font size (px)</label>
+  <div class="d-flex align-items-center gap-2">
+    <div class="slider-container">
+      <input type="range" class="form-range flex-grow-1" min="6" max="128"
+             [(ngModel)]="fontSizeValue"
+             (ngModelChange)="onFontSizeChange($event)"
+             (mousedown)="stopDrag($event)"
+             (touchstart)="stopDrag($event)"
+             data-tooltip="Adjust font size">
+    </div>
+    <input type="number" class="form-control text-end slider-input" style="width:80px"
+           [(ngModel)]="fontSizeValue"
+           (ngModelChange)="onFontSizeChange($event)"
+           data-tooltip="Type font size">
+    <button class="btn btn-outline-secondary btn-sm" (click)="resetFontSize()" data-tooltip="Reset size">
+      <i class="fas fa-undo"></i>
+    </button>
+  </div>
+</div>

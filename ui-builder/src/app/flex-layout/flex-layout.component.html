@@ -1,0 +1,52 @@
+<ng-container *ngIf="selectedBlock$ | async as selected">
+  <div *ngIf="isContainer()"
+       cdkDropList
+       [id]="block.id"
+       [cdkDropListData]="block.children || []"
+       [cdkDropListConnectedTo]="connectedLists"
+       (cdkDropListDropped)="onDrop($event)"
+       [style]="getStyle()"
+       [ngClass]="{'bg-grid-pattern': block.displayType === 'grid'}"
+       class="p-4 border rounded {{block.class}} position-relative"
+       (click)="select($event)"
+       (contextmenu)="showMenu($event)">
+    {{ block.displayName }} {{ block.id }}
+    <div *ngIf="!block.children?.length" class="text-muted text-center w-100" style="pointer-events: none;">
+      Drop components here
+    </div>
+    <ng-container *ngFor="let child of block.children; trackBy: trackByIndex">
+      <div cdkDrag
+           [cdkDragData]="child"
+           (click)="select($event)"
+           [ngClass]="{
+             'border': selected && selected.id === child.id,
+             'border-primary': selected && selected.id === child.id,
+             'position-relative': true,
+             'canvas-child': true
+           }">
+        <button *ngIf="selected && selected.id === child.id"
+                class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                (click)="handleAction('Delete'); $event.stopPropagation()">✕</button>
+        <ng-container *ngIf="renderComponent">
+          <ng-template [ngTemplateOutlet]="renderComponent"
+                       [ngTemplateOutletContext]="{ $implicit: child, parent: block }"></ng-template>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="!isContainer() && renderComponent">
+    <ng-template [ngTemplateOutlet]="renderComponent"
+                 [ngTemplateOutletContext]="{ $implicit: block, parent: parent }"></ng-template>
+  </ng-container>
+</ng-container>
+
+<div *ngIf="contextMenu$ | async as menu"
+     class="absolute bg-white shadow-lg border rounded p-2 z-50"
+     [style.top.px]="menu.y"
+     [style.left.px]="menu.x">
+  <div *ngFor="let action of contextActions"
+       class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+       (click)="handleAction(action)">
+    {{ action }}
+  </div>
+</div>

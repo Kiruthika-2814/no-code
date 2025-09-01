@@ -1,0 +1,185 @@
+[
+  {
+    "pageName": "home-page",
+    "components": [
+      {
+        "type": "container",
+        "id": "main-container",
+        "styles": {
+          "padding": "2rem",
+          "backgroundColor": "#f5f5f5",
+          "minHeight": "100vh"
+        },
+        "children": [
+          {
+            "type": "text",
+            "id": "page-title",
+            "text": "Welcome to Home Page",
+            "styles": {
+              "fontSize": "28px",
+              "fontWeight": "bold",
+              "color": "#333",
+              "textAlign": "center",
+              "marginBottom": "1rem"
+            }
+          },
+          {
+            "type": "button",
+            "id": "action-button",
+            "text": "Get Started",
+            "action": "handleGetStarted()",
+            "styles": {
+              "padding": "0.5rem 1rem",
+              "backgroundColor": "green",
+              "color": "white",
+              "border": "none",
+              "borderRadius": "5px",
+              "margin": "1rem auto",
+              "display": "block"
+            }
+          },
+          {
+            "type": "input",
+            "id": "text-input",
+            "placeholder": "Enter your email",
+            "styles": {
+              "padding": "0.5rem",
+              "border": "1px solid #ccc",
+              "borderRadius": "4px",
+              "width": "300px",
+              "margin": "0 auto",
+              "display": "block"
+            }
+          },
+          {
+            "type": "image",
+            "id": "hero-image",
+            "src": "https://via.placeholder.com/600x300",
+            "alt": "Home Hero Image",
+            "styles": {
+              "width": "600px",
+              "height": "300px",
+              "margin": "0 auto",
+              "display": "block"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "pageName": "about-page",
+    "components": [
+      {
+        "type": "container",
+        "id": "main-container",
+        "styles": {
+          "padding": "2rem",
+          "backgroundColor": "#e8f0fe",
+          "minHeight": "100vh"
+        },
+        "children": [
+          {
+            "type": "text",
+            "id": "page-title",
+            "text": "About Us",
+            "styles": {
+              "fontSize": "28px",
+              "fontWeight": "bold",
+              "color": "#222",
+              "textAlign": "center",
+              "marginBottom": "1rem"
+            }
+          },
+          {
+            "type": "card",
+            "id": "info-card",
+            "styles": {
+              "padding": "1rem",
+              "backgroundColor": "#ffffff",
+              "boxShadow": "0 2px 4px rgba(0,0,0,0.1)",
+              "borderRadius": "8px",
+              "margin": "1rem auto",
+              "width": "400px"
+            },
+            "children": [
+              {
+                "type": "text",
+                "id": "card-title",
+                "text": "Our Mission",
+                "styles": {
+                  "fontSize": "18px",
+                  "fontWeight": "bold",
+                  "marginBottom": "0.5rem"
+                }
+              },
+              {
+                "type": "text",
+                "id": "card-description",
+                "text": "We aim to simplify web development with no-code solutions.",
+                "styles": {
+                  "fontSize": "14px",
+                  "color": "#666"
+                }
+              }
+            ]
+          },
+          {
+            "type": "grid",
+            "id": "team-grid",
+            "columns": 2,
+            "styles": {
+              "display": "grid",
+              "gridTemplateColumns": "repeat(2, 1fr)",
+              "gap": "1rem",
+              "margin": "1rem auto",
+              "maxWidth": "800px"
+            },
+            "children": [
+              {
+                "type": "card",
+                "id": "team-member-1",
+                "styles": {
+                  "padding": "1rem",
+                  "backgroundColor": "#ffffff",
+                  "boxShadow": "0 2px 4px rgba(0,0,0,0.1)"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "member-1-name",
+                    "text": "Team Member 1",
+                    "styles": {
+                      "fontSize": "16px",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "card",
+                "id": "team-member-2",
+                "styles": {
+                  "padding": "1rem",
+                  "backgroundColor": "#ffffff",
+                  "boxShadow": "0 2px 4px rgba(0,0,0,0.1)"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "member-2-name",
+                    "text": "Team Member 2",
+                    "styles": {
+                      "fontSize": "16px",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

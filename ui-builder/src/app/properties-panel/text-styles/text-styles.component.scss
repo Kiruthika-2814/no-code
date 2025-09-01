@@ -1,0 +1,38 @@
+.text-style-group {
+  display: flex;
+  gap: 8px;
+}
+
+.text-style-btn {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.text-style-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.text-style-btn:hover {
+  background: #f1f1f1;
+}
+
+/* ✅ Tooltip Styling */
+.custom-tooltip {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+}

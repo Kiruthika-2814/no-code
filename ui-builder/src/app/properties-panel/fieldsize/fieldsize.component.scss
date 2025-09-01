@@ -1,0 +1,98 @@
+.field-size-container {
+  padding: 10px;
+}
+
+.fmActTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: #252c3e;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.butTab {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.size-option {
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #252c3e;
+  background: #f8f9fa;
+  border: 1px solid #b8bbd3;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  flex: 1;
+  transition: 0.3s;
+
+  &.selected {
+    background: #2eb79f;
+    color: #fff;
+    border-color: #2eb79f;
+  }
+
+  &.lastBox {
+    margin-right: 0;
+  }
+
+  em {
+    font-style: normal;
+  }
+}
+
+.zf-clearBoth {
+  clear: both;
+}
+
+.custom-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.zf-labelName {
+  font-weight: 500;
+  font-size: 13px;
+  color: #252c3e;
+  margin-bottom: 2px;
+}
+
+.zf-form-sBox {
+  padding: 9px 10px 10px 5px;
+  background: #fff;
+  border: 1px solid #b8bbd3;
+  border-radius: 4px;
+  font-size: 15px;
+  height: 40px;
+  transition: 0.3s;
+  color: #252c3e;
+  outline: none;
+  box-sizing: border-box;
+
+  &:hover {
+    border: 1px solid #b8bbd3;
+  }
+
+  &:focus {
+    border: 1px solid #2eb79f;
+    box-shadow: 0px 0px 2px 0px #2eb79f;
+  }
+
+  &::placeholder {
+    color: #252c3e;
+    opacity: 0.5;
+  }
+}
+
+.input-field {
+  width: 100px;
+}
+
+.unit-select {
+  width: 60px;
+}

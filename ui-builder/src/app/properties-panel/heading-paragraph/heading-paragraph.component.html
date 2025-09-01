@@ -1,0 +1,22 @@
+
+<div class="composite-dropdown-labeled mb-3" *ngIf="isTextEditable()">
+  <label class="control-label with-ellipsis">
+    <span class="has-tooltip">
+      <span class="control-label-base" data-tooltip="Style">Style</span>
+      <span class="tooltip-on-ellipsis-content-measure" style="visibility: hidden; height: 0px; position: absolute; top: 0px; white-space: nowrap;">Style</span>
+    </span>
+  </label>
+  <div data-aid="themes-dropdown" class="font-dropdown control-dropdown">
+    <select [(ngModel)]="selectedStyle" (ngModelChange)="onStyleChange($event)" (mousedown)="stopDrag($event)" (touchstart)="stopDrag($event)" data-hook="themes-dropdown">
+      <option value="font_9" selected>Paragraph 3* (12px)</option>
+      <option value="font_1">Paragraph 1 (16px)</option>
+      <option value="font_2">Paragraph 2 (14px)</option>
+      <option value="font_3">Heading 1 (32px)</option>
+      <option value="font_4">Heading 2 (28px)</option>
+      <option value="font_5">Heading 3 (24px)</option>
+      <option value="font_6">Heading 4 (20px)</option>
+      <option value="font_7">Heading 5 (18px)</option>
+      <option value="font_8">Heading 6 (16px)</option>
+    </select>
+  </div>
+</div>

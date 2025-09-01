@@ -1,0 +1,20 @@
+<!-- Alignment -->
+<div class="mb-3" *ngIf="isTextEditable()">
+  <label class="form-label">Alignment</label><br>
+  <button class="btn btn-sm btn-outline-dark me-1" [class.active]="selectedComponent?.textAlign === 'left'"
+          (click)="setAlign('left')" title="Align Left (Ctrl+Shift+L)">
+    <i class="fas fa-align-left"></i>
+  </button>
+  <button class="btn btn-sm btn-outline-dark me-1" [class.active]="selectedComponent?.textAlign === 'center'"
+          (click)="setAlign('center')" title="Align Center (Ctrl+Shift+E)">
+    <i class="fas fa-align-center"></i>
+  </button>
+  <button class="btn btn-sm btn-outline-dark me-1" [class.active]="selectedComponent?.textAlign === 'right'"
+          (click)="setAlign('right')" title="Align Right (Ctrl+Shift+R)">
+    <i class="fas fa-align-right"></i>
+  </button>
+  <button class="btn btn-sm btn-outline-dark" [class.active]="selectedComponent?.textAlign === 'justify'"
+          (click)="setAlign('justify')" title="Justify (Ctrl+Shift+J)">
+    <i class="fas fa-align-justify"></i>
+  </button>
+</div>
