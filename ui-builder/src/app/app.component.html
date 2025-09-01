@@ -17,7 +17,11 @@
 
       <!-- Center Canvas Area -->
       <div [ngClass]="{'col-10': !isCollapsed, 'col-11': isCollapsed}" style="height: 100%; overflow-y: auto;">
+<<<<<<< HEAD
         
+=======
+        <app-page-manager></app-page-manager>
+>>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a
         <h5>Canvas</h5>
         <button class="btn btn-primary mb-3" (click)="addNewContainer()">Add New Container</button>
 
@@ -86,6 +90,7 @@
                 <div cdkDropList
                      [id]="comp.id"
                      [cdkDropListData]="comp.children || []"
+<<<<<<< HEAD
 <<<<<<< Updated upstream
                      [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
 =======
@@ -95,6 +100,9 @@
                      [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
 
 >>>>>>> Stashed changes
+=======
+                     [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
+>>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a
                      (cdkDropListDropped)="drop($event, comp)"
                      (click)="selectComponent(comp); $event.stopPropagation()"
                      class="p-2 border rounded position-relative"
@@ -305,4 +313,8 @@
         (cancel)="deselectComponent()"></app-properties-panel>
     </div>
   </div>
+<<<<<<< HEAD
 </div>
+=======
+</div>
+>>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a

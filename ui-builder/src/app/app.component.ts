@@ -8,6 +8,7 @@ import { HeaderLayoutComponent } from './header-layout/header-layout.component';
 import { PropertiesPanelComponent } from './properties-panel/properties-panel.component';
 import { SafeHtmlPipe } from '../safe-html.pipe';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { PageManagerComponent } from './page-manager/page-manager.component';
 
 
 interface DashboardComponent {
@@ -101,8 +102,13 @@ interface CanvasConfig {
     HeaderLayoutComponent,
     PropertiesPanelComponent,
     SafeHtmlPipe,
+<<<<<<< HEAD
     SidebarComponent
     
+=======
+    SidebarComponent,
+    PageManagerComponent
+>>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -269,6 +275,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const ids: string[] = [];
     const collect = (list: DashboardComponent[]) => {
       (list || []).forEach(c => {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
 =======
@@ -278,6 +285,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
 
 >>>>>>> Stashed changes
+=======
+        if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
+>>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a
           ids.push(c.id);
         }
         if (c.children?.length) collect(c.children);
@@ -764,3 +774,4 @@ export class AppComponent implements OnInit, AfterViewInit {
     console.log('Selected after adding from sidebar:', this.selectedComponent?.id, this.selectedComponent?.type);
   }
 }
+

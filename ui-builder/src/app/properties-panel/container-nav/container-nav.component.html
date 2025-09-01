@@ -1,38 +1,122 @@
-<!-- Container & Nav -->
 <ng-container *ngIf="selectedComponent?.type === 'container' || selectedComponent?.type === 'nav'">
   <div class="divider my-2"><span>Container Layout</span></div>
-  <label class="form-label">Direction</label>
-  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.flexDirection" (ngModelChange)="updateCanvasComponent()">
-    <option *ngFor="let dir of flexDirections" [value]="dir">{{ dir }}</option>
-  </select>
-  <label class="form-label">Justify Content</label>
-  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.justifyContent" (ngModelChange)="updateCanvasComponent()">
-    <option *ngFor="let j of justifyContents" [value]="j">{{ j }}</option>
-  </select>
-  <label class="form-label">Align Items</label>
-  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.alignItems" (ngModelChange)="updateCanvasComponent()">
-    <option *ngFor="let a of alignItems" [value]="a">{{ a }}</option>
-  </select>
-  <label class="form-label">Gap (px)</label>
-  <input type="number" min="0" class="form-control mb-2" [(ngModel)]="selectedComponent!.gap" (ngModelChange)="updateCanvasComponent()" />
-  <label class="form-label">Padding</label>
-  <input type="text" class="form-control mb-2" [(ngModel)]="selectedComponent!.padding" (ngModelChange)="updateCanvasComponent()" placeholder="e.g. 16px 24px" />
-  <label class="form-label">Background</label>
-  <input type="color" class="form-control form-control-color mb-2" [(ngModel)]="selectedComponent!.background" (ngModelChange)="updateCanvasComponent()" />
-  <label class="form-label">Border Radius</label>
-  <input type="text" class="form-control mb-2" [(ngModel)]="selectedComponent!.borderRadius" (ngModelChange)="updateCanvasComponent()" placeholder="e.g. 8px" />
-  <label class="form-label">Shadow</label>
-  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.shadow" (ngModelChange)="updateCanvasComponent()">
-    <option value="none">None</option>
-    <option value="sm">Small</option>
-    <option value="md">Medium</option>
-    <option value="lg">Large</option>
-  </select>
-  <label class="form-label">Overflow</label>
-  <select class="form-select mb-2" [(ngModel)]="selectedComponent!.overflow" (ngModelChange)="updateCanvasComponent()">
-    <option value="visible">Visible</option>
-    <option value="hidden">Hidden</option>
-    <option value="auto">Auto</option>
-    <option value="scroll">Scroll</option>
-  </select>
+
+  <!-- Display -->
+  <div class="mb-3">
+    <label class="form-label">Display</label>
+    <select class="form-select" [(ngModel)]="selectedComponent!.display" (ngModelChange)="updateCanvasComponent()">
+      <option value="flex">Flex</option>
+      <option value="grid">Grid</option>
+    </select>
+  </div>
+
+  <!-- Flex Options -->
+  <ng-container *ngIf="selectedComponent?.display === 'flex'">
+    <!-- Direction -->
+    <div class="mb-3">
+      <label class="form-label">Direction</label>
+      <select class="form-select" [(ngModel)]="selectedComponent!.flexDirection" (ngModelChange)="updateCanvasComponent()">
+        <option value="row">Row</option>
+        <option value="column">Column</option>
+      </select>
+    </div>
+
+    <!-- Align X -->
+    <div class="mb-3">
+      <label class="form-label">Align X</label>
+      <select class="form-select"
+              [ngModel]="selectedComponent?.flexDirection==='row' ? selectedComponent?.justifyContent : selectedComponent?.alignItems"
+              (ngModelChange)="onAlignXChange($event)">
+        <option *ngFor="let opt of (selectedComponent?.flexDirection==='row' ? justifyOptions : alignOptions)" [value]="opt">{{ opt }}</option>
+      </select>
+    </div>
+
+    <!-- Align Y -->
+    <div class="mb-3">
+      <label class="form-label">Align Y</label>
+      <select class="form-select"
+              [ngModel]="selectedComponent?.flexDirection==='row' ? selectedComponent?.alignItems : selectedComponent?.justifyContent"
+              (ngModelChange)="onAlignYChange($event)">
+        <option *ngFor="let opt of (selectedComponent?.flexDirection==='row' ? alignOptions : justifyOptions)" [value]="opt">{{ opt }}</option>
+      </select>
+    </div>
+  </ng-container>
+
+  <!-- Grid Options -->
+  <ng-container *ngIf="selectedComponent?.display === 'grid'">
+    <!-- Columns -->
+    <div class="mb-3">
+      <label class="form-label">Columns</label>
+      <div class="d-flex align-items-center gap-2">
+        <input type="number" class="form-control" style="width:80px" min="1" max="12"
+               [(ngModel)]="selectedComponent!.gridColumns" (ngModelChange)="updateCanvasComponent()">
+      </div>
+    </div>
+
+    <!-- Rows -->
+    <div class="mb-3">
+      <label class="form-label">Rows</label>
+      <div class="d-flex align-items-center gap-2">
+        <input type="number" class="form-control" style="width:80px" min="1" max="12"
+               [(ngModel)]="selectedComponent!.gridRows" (ngModelChange)="updateCanvasComponent()">
+      </div>
+    </div>
+
+    <!-- Grid Direction -->
+    <div class="mb-3">
+      <label class="form-label">Direction</label>
+      <select class="form-select" [(ngModel)]="selectedComponent!.gridAutoFlow" (ngModelChange)="updateCanvasComponent()">
+        <option value="row">Row</option>
+        <option value="column">Column</option>
+        <option value="dense">Dense</option>
+      </select>
+    </div>
+
+    <!-- Align X (justify-items) -->
+    <div class="mb-3">
+      <label class="form-label">Align X</label>
+      <select class="form-select" [(ngModel)]="selectedComponent!.justifyItems" (ngModelChange)="onGridAlignXChange()">
+        <option *ngFor="let opt of gridAlignOptions" [value]="opt">{{ opt }}</option>
+      </select>
+    </div>
+
+    <!-- Align Y (align-items) -->
+    <div class="mb-3">
+      <label class="form-label">Align Y</label>
+      <select class="form-select" [(ngModel)]="selectedComponent!.alignItems" (ngModelChange)="onGridAlignYChange()">
+        <option *ngFor="let opt of gridAlignOptions" [value]="opt">{{ opt }}</option>
+      </select>
+    </div>
+
+    <!-- Grid Template Areas -->
+    <div class="mb-3">
+      <label class="form-label">Grid Areas</label>
+      <textarea class="form-control" rows="4" placeholder="e.g., 'header header' 'main sidebar' 'footer footer'"
+                [(ngModel)]="selectedComponent!.gridTemplateAreas" (ngModelChange)="updateCanvasComponent()"></textarea>
+      <small class="form-text text-muted">Define grid areas (e.g., 'header header' 'main sidebar'). Leave empty for auto placement.</small>
+    </div>
+  </ng-container>
+
+  <!-- Gap -->
+  <div class="mb-3">
+    <label class="form-label">Gap</label>
+    <div class="d-flex align-items-center gap-2">
+      <input type="range" class="form-range flex-grow-1" min="0" max="200"
+             [(ngModel)]="selectedComponent!.gapValue" (ngModelChange)="onGapChange()"
+             (mousedown)="stopDrag($event)" (touchstart)="stopDrag($event)">
+      <input type="number" class="form-control text-end" style="width:80px" min="0" max="200"
+             [(ngModel)]="selectedComponent!.gapValue" (ngModelChange)="onGapChange()">
+      <select class="form-select" style="width:80px" [(ngModel)]="selectedComponent!.gapUnit" (ngModelChange)="onGapChange()">
+        <option *ngFor="let unit of gapUnits" [value]="unit">{{ unit }}</option>
+      </select>
+      <button class="btn btn-outline-secondary btn-sm" type="button" (click)="resetGap()">⟳</button>
+    </div>
+  </div>
+
+  <!-- Background -->
+  <div class="mb-3">
+    <label class="form-label">Background</label>
+    <input type="color" class="form-control form-control-color"
+           [(ngModel)]="selectedComponent!.background" (ngModelChange)="updateCanvasComponent()" />
+  </div>
 </ng-container>
