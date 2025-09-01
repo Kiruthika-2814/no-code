@@ -32,6 +32,7 @@
   justify-content: flex-start;
   background: #fbfcf8;
   color: var(--text-color);
+  overflow: auto; /* Ensure scrolling works */
 }
 
 /* Scrollbar styling */
@@ -75,7 +76,7 @@
   background: $blue-100;
 }
 
-/* Canvas Container */
+/* Canvas Container (for container and nav components) */
 .canvas-container {
   position: relative;
   min-width: 300px;
@@ -84,43 +85,33 @@
   background: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 12px;
+  display: flex; /* Ensure flex for children */
+  flex-direction: column; /* Default for containers */
+  gap: 12px;
 }
 
-/* Column */
-.column {
-  position: relative;
-  min-width: 100px;
-  min-height: 100px;
-  border: 1px solid #ddd;
+/* Nested container children */
+.canvas-container [cdkDropList] {
+  min-height: 100px; /* Ensure nested containers have space */
+  min-width: 100%;
+  background: #f9f9f9; /* Slightly different background for visibility */
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: #f9f9f9;
   padding: 8px;
 }
 
-.column:hover {
-  background: $blue-100; /* Changed from $blue-50 to $blue-100 */
+/* Ensure children are visible */
+.canvas-container .canvas-child {
+  display: block !important;
+  min-height: 40px;
+  width: 100%;
 }
 
-/* Resize Handle */
-.resize-handle {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  cursor: se-resize;
-  background: $blue-500;
-  border-radius: 50%;
-  z-index: 100;
-  transition: background 0.2s ease;
+/* Empty state placeholder */
+.text-muted {
+  pointer-events: none; /* Prevent blocking drops */
+  color: #{$gray-500};
 }
-
-.resize-handle:hover {
-  background: $blue-700;
-  transform: scale(1.2);
-}
-
-
 
 /* Loading State */
 .component-wrapper.loading {
@@ -151,7 +142,7 @@
     width: 200px;
     font-size: 12px;
   }
-  .component-wrapper, .canvas-container, .column {
+  .component-wrapper, .canvas-container {
     min-width: 200px;
     min-height: 100px;
   }
@@ -173,7 +164,7 @@
 }
 
 /* General Transitions */
-.nav-link, .component-wrapper, .canvas-container, .column {
+.nav-link, .component-wrapper, .canvas-container {
   transition: all 0.3s ease;
 }
 
@@ -228,7 +219,6 @@
   border-color: #007bff;
   box-shadow: 0 0 5px rgba(0,123,255,0.4);
 }
-
 
 /* Toggle button style */
 button.rounded-circle {

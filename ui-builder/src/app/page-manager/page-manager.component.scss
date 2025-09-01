@@ -1,0 +1,185 @@
+/* ================== Page Manager ================== */
+:host {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Top Buttons */
+.d-flex.mb-3 {
+  gap: 0.5rem;
+}
+
+/* Breadcrumb Navigation */
+.breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 1rem;
+  font-size: 14px;
+
+  .breadcrumb {
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s;
+
+    &:hover,
+    &.active {
+      color: #007bff;
+      font-weight: bold;
+    }
+  }
+}
+
+/* Canvas */
+.canvas {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  min-height: 200px;
+  background: #fafafa;
+
+  h3 {
+    margin: 0 0 1rem 0;
+  }
+
+  .component-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .component {
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      cursor: grab;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #f9f9f9;
+      }
+    }
+  }
+}
+
+/* ================== Draggable Modal ================== */
+.properties-panel {
+  width: 350px;
+  position: absolute;
+  top: 70px;
+  right: 50px;
+  border-radius: 8px;
+  z-index: 2000;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+
+  .panel-header {
+    cursor: move;
+    background: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+    }
+  }
+
+  .panel-body {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    input.form-control {
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    ul.list-group {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li.list-group-item {
+        padding: 10px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+          background: #f0f0f0;
+        }
+
+        &.text-danger {
+          color: red;
+
+          &:hover {
+            background: #ffe5e5;
+          }
+        }
+      }
+    }
+  }
+
+  .panel-footer {
+    padding: 10px 15px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+
+    .btn {
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 6px;
+    }
+  }
+}
+
+/* Tooltip after creating page */
+.breadcrumb-tooltip {
+  position: absolute;
+  top: -30px;
+  background: #007bff;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.breadcrumb-tooltip.show {
+  opacity: 1;
+}
+
+/* Breadcrumb briefly highlighted */
+.breadcrumb.highlighted {
+  background-color: #e6f0ff;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+
+.properties-panel {
+  position: absolute !important; /* already set */
+  transition: top 0.2s, left 0.2s;
+}
