@@ -9,6 +9,7 @@ import { PropertiesPanelComponent } from './properties-panel/properties-panel.co
 import { SafeHtmlPipe } from '../safe-html.pipe';
 import { SidebarComponent } from './sidebar/sidebar.component';
 
+
 interface DashboardComponent {
   type: string;
   displayName?: string;
@@ -101,6 +102,7 @@ interface CanvasConfig {
     PropertiesPanelComponent,
     SafeHtmlPipe,
     SidebarComponent
+    
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -267,7 +269,15 @@ export class AppComponent implements OnInit, AfterViewInit {
     const ids: string[] = [];
     const collect = (list: DashboardComponent[]) => {
       (list || []).forEach(c => {
+<<<<<<< Updated upstream
         if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
+=======
+
+        if (c && ['container', 'nav'].includes(c.type) && c.id) {
+
+        if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
+
+>>>>>>> Stashed changes
           ids.push(c.id);
         }
         if (c.children?.length) collect(c.children);

@@ -17,6 +17,7 @@
 
       <!-- Center Canvas Area -->
       <div [ngClass]="{'col-10': !isCollapsed, 'col-11': isCollapsed}" style="height: 100%; overflow-y: auto;">
+        
         <h5>Canvas</h5>
         <button class="btn btn-primary mb-3" (click)="addNewContainer()">Add New Container</button>
 
@@ -85,7 +86,15 @@
                 <div cdkDropList
                      [id]="comp.id"
                      [cdkDropListData]="comp.children || []"
+<<<<<<< Updated upstream
                      [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
+=======
+
+                     [cdkDropListConnectedTo]="getConnectedLists(comp)"
+
+                     [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
+
+>>>>>>> Stashed changes
                      (cdkDropListDropped)="drop($event, comp)"
                      (click)="selectComponent(comp); $event.stopPropagation()"
                      class="p-2 border rounded position-relative"
