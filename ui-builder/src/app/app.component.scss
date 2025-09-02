@@ -253,3 +253,21 @@ button.rounded-circle:hover {
   background: #fff;
   opacity: 0.9;
 }
+
+
+
+
+
+
+
+
+
+/* Sticky toolbar */
+.sticky-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1100;   /* higher than sidebar */
+  background: #fff;
+  border-bottom: 1px solid #dee2e6;
+}
+

@@ -14,21 +14,7 @@
       <button class="close-btn" (click)="onCancel()" data-tooltip="Close (Esc)">&times;</button>
     </div>
 
-    <!-- Custom Cancel Modal -->
-    <div *ngIf="showCancelModal" class="modal-overlay">
-      <div class="modal-box">
-        <button class="close-btn" (click)="closeModal()">&times;</button>
-        <div class="modal-header">
-          <i class="fas fa-exclamation-triangle"></i>
-          <span class="warning-text">Changes are not saved!</span>
-        </div>
-        <p>Do you want to proceed?</p>
-        <div class="modal-actions">
-          <button class="btn no" (click)="closeModal()">No</button>
-          <button class="btn yes" (click)="discardChanges()">Yes</button>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- Body -->
     <div class="panel-body">
@@ -95,11 +81,23 @@
     </div>
 
     <!-- Footer -->
-    <div class="panel-footer d-flex justify-content-end gap-2">
-      <button class="btn btn-secondary btn-sm" (click)="onCancel()" data-tooltip="Cancel">Cancel</button>
-      <button class="btn btn-success btn-sm" (click)="onSave()" data-tooltip="Save">Save</button>
-    </div>
+<div class="panel-footer d-flex justify-content-end gap-2">
+  <button class="btn btn-secondary btn-sm" (click)="onCancel()" data-tooltip="Cancel">Cancel</button>
+  <button class="btn btn-success btn-sm" (click)="saveComponent()" data-tooltip="Save">Save</button>
+</div>
+
+<!-- Reusable Confirm Dialog -->
+<app-confirm-dialog
+  [title]="'Alert'"
+  [message]="'Changes are not saved. Do you want to proceed?'"
+  [confirmText]="'Yes'"
+  [cancelText]="'No'"
+  [visible]="showCancelModal"
+  (confirm)="discardChanges()"
+  (cancel)="showCancelModal = false">
+</app-confirm-dialog>
+
   </div>
 
-  <div class="toast-message" id="toastMessage">Changes Saved</div>
+
 </body>

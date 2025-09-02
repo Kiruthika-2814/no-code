@@ -2,80 +2,85 @@
   <!-- Header -->
   <app-header-layout></app-header-layout>
 
+  <app-confirm-dialog
+            [(visible)]="isConfirmVisible"
+            [title]="'Delete Component'"
+            [message]="'Are you sure you want to delete ' + (selectedComponent?.displayName || 'this component') + '?'"
+            (confirm)="handleDelete()"
+            (cancel)="isConfirmVisible = false">
+          </app-confirm-dialog>
   <!-- Main content -->
   <div class="container-fluid mt-3">
     <div class="row" style="height: calc(100vh - 70px);">
-      
+
       <!-- Sidebar -->
       <div [ngClass]="{'col-2': !isCollapsed, 'col-1': isCollapsed}">
-        <app-sidebar
-          [sidebarGroups]="sidebarGroups"
-          [sidebarConnectedTo]="sidebarConnectedTo"
+        <app-sidebar [sidebarGroups]="sidebarGroups" [sidebarConnectedTo]="sidebarConnectedTo"
           (componentAdded)="onComponentAdded($event)">
         </app-sidebar>
       </div>
 
       <!-- Center Canvas Area -->
       <div [ngClass]="{'col-10': !isCollapsed, 'col-11': isCollapsed}" style="height: 100%; overflow-y: auto;">
-        <app-page-manager></app-page-manager>
         <h5>Canvas</h5>
-        <button class="btn btn-primary mb-3" (click)="addNewContainer()">Add New Container</button>
 
+        <!-- Sticky button bar -->
+        <div class="sticky-toolbar d-flex mb-3 p-2">
+          <button class="btn btn-primary me-2 d-flex align-items-center" (click)="addNewContainer()">
+            <i class="bi bi-plus-circle me-1"></i> Add New Container
+          </button>
+
+          <button class="btn btn-primary d-flex align-items-center" (click)="onSave()" data-tooltip="Save">
+            <i class="bi bi-save me-1"></i> Save
+          </button>
+        </div>
+
+        <!-- global toast -->
+        <app-toast [message]="toastMessage" [visible]="toastVisible"></app-toast>
+        
         <!-- Main Canvas with Default Container -->
-        <div cdkDropList
-             id="canvasList"
-             [cdkDropListData]="canvasComponents"
-             [cdkDropListConnectedTo]="canvasConnectedTo"
-             (cdkDropListDropped)="drop($event)"
-             class="p-1 bg-white border rounded"
-             [ngStyle]="{
-               'display': 'flex',
-               'flex-direction': canvasConfig.flexDirection,
-               'justify-content': canvasConfig.justifyContent,
-               'flex-wrap': 'wrap',
-               'gap': '12px',
+        <div cdkDropList id="canvasList" [cdkDropListData]="canvasComponents"
+          [cdkDropListConnectedTo]="canvasConnectedTo" (cdkDropListDropped)="drop($event)"
+          class="p-1 bg-white border rounded" [ngStyle]="{
                'min-height': 'calc(100vh - 200px)',
                'width': '100%'
              }">
           <!-- Empty state -->
-          <div *ngIf="!canvasComponents.length" class="text-muted text-center w-100 p-5" (click)="$event.stopPropagation()">
+          <div *ngIf="!canvasComponents.length" class="text-muted text-center w-100 p-5"
+            (click)="$event.stopPropagation()">
             Drop components here
           </div>
+
+          
 
           <!-- Recursive ng-template for rendering any component at any depth -->
           <ng-template #renderComponent let-comp let-parent="parent">
             <ng-container [ngSwitch]="comp.type">
               <!-- Container -->
               <ng-container *ngSwitchCase="'container'">
-                <div cdkDropList
-                     [id]="comp.id"
-                     [cdkDropListData]="comp.children || []"
-                     [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
-                     (cdkDropListDropped)="drop($event, comp)"
-                     (click)="selectComponent(comp); $event.stopPropagation()"
-                     class="p-2 border rounded position-relative"
-                     [ngStyle]="getComponentStyle(comp)">
+                <div cdkDropList [id]="comp.id" [cdkDropListData]="comp.children || []"
+                  [cdkDropListConnectedTo]="getConnectedLists(comp)" (cdkDropListDropped)="drop($event, comp)"
+                  (click)="selectComponent(comp); $event.stopPropagation()" class="p-2 border rounded position-relative"
+                  [ngStyle]="getComponentStyle(comp)">
                   <!-- Empty placeholder -->
-                  <div *ngIf="!comp.children?.length" class="text-muted text-center w-100" style="pointer-events: none;" (click)="$event.stopPropagation()">
+                  <div *ngIf="!comp.children?.length" class="text-muted text-center w-100" style="pointer-events: none;"
+                    (click)="$event.stopPropagation()">
                     Drop components here
                   </div>
                   <!-- Children -->
                   <ng-container *ngFor="let child of comp.children; trackBy: trackById">
-                    <div cdkDrag
-                         [cdkDragData]="child"
-                         (click)="selectComponent(child); $event.stopPropagation()"
-                         [ngStyle]="getChildStyle(child, comp)"
-                         [ngClass]="{
+                    <div cdkDrag [cdkDragData]="child" (click)="selectComponent(child); $event.stopPropagation()"
+                      [ngStyle]="getChildStyle(child, comp)" [ngClass]="{
                            'border': selectedComponent?.id === child.id,
                            'border-primary': selectedComponent?.id === child.id,
                            'position-relative': true,
                            'canvas-child': true
                          }">
                       <button *ngIf="selectedComponent?.id === child.id"
-                              class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
-                              (click)="deleteSelected(); $event.stopPropagation()">✕</button>
+                        class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                        (click)="isConfirmVisible = true; $event.stopPropagation()">✕</button>
                       <ng-template [ngTemplateOutlet]="renderComponent"
-                                   [ngTemplateOutletContext]="{ $implicit: child, parent: comp }"></ng-template>
+                        [ngTemplateOutletContext]="{ $implicit: child, parent: comp }"></ng-template>
                     </div>
                   </ng-container>
                 </div>
@@ -83,35 +88,29 @@
 
               <!-- Nav -->
               <ng-container *ngSwitchCase="'nav'">
-                <div cdkDropList
-                     [id]="comp.id"
-                     [cdkDropListData]="comp.children || []"
-                     [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
-                     (cdkDropListDropped)="drop($event, comp)"
-                     (click)="selectComponent(comp); $event.stopPropagation()"
-                     class="p-2 border rounded position-relative"
-                     [ngStyle]="getComponentStyle(comp)">
+                <div cdkDropList [id]="comp.id" [cdkDropListData]="comp.children || []"
+                  [cdkDropListConnectedTo]="getConnectedLists(comp)" (cdkDropListDropped)="drop($event, comp)"
+                  (click)="selectComponent(comp); $event.stopPropagation()" class="p-2 border rounded position-relative"
+                  [ngStyle]="getComponentStyle(comp)">
                   <!-- Empty placeholder -->
-                  <div *ngIf="!comp.children?.length" class="text-muted text-center w-100" style="pointer-events: none;" (click)="$event.stopPropagation()">
+                  <div *ngIf="!comp.children?.length" class="text-muted text-center w-100" style="pointer-events: none;"
+                    (click)="$event.stopPropagation()">
                     Drop components here
                   </div>
                   <!-- Children -->
                   <ng-container *ngFor="let child of comp.children; trackBy: trackById">
-                    <div cdkDrag
-                         [cdkDragData]="child"
-                         (click)="selectComponent(child); $event.stopPropagation()"
-                         [ngStyle]="getChildStyle(child, comp)"
-                         [ngClass]="{
+                    <div cdkDrag [cdkDragData]="child" (click)="selectComponent(child); $event.stopPropagation()"
+                      [ngStyle]="getChildStyle(child, comp)" [ngClass]="{
                            'border': selectedComponent?.id === child.id,
                            'border-primary': selectedComponent?.id === child.id,
                            'position-relative': true,
                            'canvas-child': true
                          }">
                       <button *ngIf="selectedComponent?.id === child.id"
-                              class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
-                              (click)="deleteSelected(); $event.stopPropagation()">✕</button>
+                        class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                        (click)="isConfirmVisible = true; $event.stopPropagation()">✕</button>
                       <ng-template [ngTemplateOutlet]="renderComponent"
-                                   [ngTemplateOutletContext]="{ $implicit: child, parent: comp }"></ng-template>
+                        [ngTemplateOutletContext]="{ $implicit: child, parent: comp }"></ng-template>
                     </div>
                   </ng-container>
                 </div>
@@ -120,12 +119,18 @@
               <!-- Text -->
               <ng-container *ngSwitchCase="'text'">
                 <ng-container [ngSwitch]="comp.textStyle || 'p'">
-                  <h1 *ngSwitchCase="'h1'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml"></h1>
-                  <h2 *ngSwitchCase="'h2'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml"></h2>
-                  <h3 *ngSwitchCase="'h3'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml"></h3>
-                  <h4 *ngSwitchCase="'h4'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml"></h4>
-                  <h5 *ngSwitchCase="'h5'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml"></h5>
-                  <h6 *ngSwitchCase="'h6'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml"></h6>
+                  <h1 *ngSwitchCase="'h1'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml">
+                  </h1>
+                  <h2 *ngSwitchCase="'h2'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml">
+                  </h2>
+                  <h3 *ngSwitchCase="'h3'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml">
+                  </h3>
+                  <h4 *ngSwitchCase="'h4'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml">
+                  </h4>
+                  <h5 *ngSwitchCase="'h5'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml">
+                  </h5>
+                  <h6 *ngSwitchCase="'h6'" [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml">
+                  </h6>
                   <p *ngSwitchDefault [ngStyle]="getChildStyle(comp, parent)" [innerHTML]="comp.text | safeHtml"></p>
                 </ng-container>
               </ng-container>
@@ -133,84 +138,87 @@
               <!-- List -->
               <ng-container *ngSwitchCase="'list'">
                 <ng-container [ngSwitch]="comp.listType || 'unordered'">
-                  <ul *ngSwitchCase="'unordered'" [ngStyle]="getChildStyle(comp, parent)" [ngClass]="comp.class || 'list-group'">
-                    <li *ngFor="let item of comp.items; let i = index" class="list-group-item" [innerHTML]="item | safeHtml"></li>
+                  <ul *ngSwitchCase="'unordered'" [ngStyle]="getChildStyle(comp, parent)"
+                    [ngClass]="comp.class || 'list-group'">
+                    <li *ngFor="let item of comp.items; let i = index" class="list-group-item"
+                      [innerHTML]="item | safeHtml"></li>
                   </ul>
-                  <ol *ngSwitchCase="'ordered'" [ngStyle]="getChildStyle(comp, parent)" [ngClass]="comp.class || 'list-group'">
-                    <li *ngFor="let item of comp.items; let i = index" class="list-group-item" [innerHTML]="item | safeHtml"></li>
+                  <ol *ngSwitchCase="'ordered'" [ngStyle]="getChildStyle(comp, parent)"
+                    [ngClass]="comp.class || 'list-group'">
+                    <li *ngFor="let item of comp.items; let i = index" class="list-group-item"
+                      [innerHTML]="item | safeHtml"></li>
                   </ol>
                 </ng-container>
               </ng-container>
 
               <!-- Input Components -->
               <input *ngSwitchCase="'input'" class="form-control" [(ngModel)]="comp.text"
-                     [attr.placeholder]="comp.placeholder || 'Enter input here'" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
+                [attr.placeholder]="comp.placeholder || 'Enter input here'" [ngClass]="comp.class"
+                [ngStyle]="getChildStyle(comp, parent)"
+                (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()"
+                (contextmenu)="contextMenu.showContextMenu($event, comp)" />
               <input *ngSwitchCase="'email'" type="email" class="form-control" [(ngModel)]="comp.text"
-                     [attr.placeholder]="comp.placeholder || 'Enter email'" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
+                [attr.placeholder]="comp.placeholder || 'Enter email'" [ngClass]="comp.class"
+                [ngStyle]="getChildStyle(comp, parent)"
+                (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" 
+                (contextmenu)="contextMenu.showContextMenu($event, comp)" />
               <textarea *ngSwitchCase="'textarea'" class="form-control" [(ngModel)]="comp.text"
-                        [attr.placeholder]="comp.placeholder || 'Enter details here'" [ngClass]="comp.class"
-                        [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()"></textarea>
-              <input *ngSwitchCase="'password'" type="password" class="form-control" [(ngModel)]="comp.text"
-                     [placeholder]="comp.placeholder" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
-              <input *ngSwitchCase="'number'" type="number" class="form-control" [(ngModel)]="comp.text"
-                     [placeholder]="comp.placeholder" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
-              <input *ngSwitchCase="'date'" type="date" class="form-control" [(ngModel)]="comp.text"
-                     [placeholder]="comp.placeholder" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
+                [attr.placeholder]="comp.placeholder || 'Enter details here'" [ngClass]="comp.class"
+                [ngStyle]="getChildStyle(comp, parent)"
+                (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" (contextmenu)="contextMenu.showContextMenu($event, comp)"></textarea>
+              
               <select *ngSwitchCase="'select'" class="form-select" [(ngModel)]="comp.value" [ngClass]="comp.class"
-                      [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()">
+                [ngStyle]="getChildStyle(comp, parent)"
+                (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()" (contextmenu)="contextMenu.showContextMenu($event, comp)">
                 <option *ngFor="let opt of comp.options" [value]="opt">{{ opt }}</option>
               </select>
               <div *ngSwitchCase="'checkbox'" class="form-group" [ngClass]="comp.class"
-                   [ngStyle]="getChildStyle(comp, parent)">
+                [ngStyle]="getChildStyle(comp, parent)">
                 <label class="form-check">
                   <input type="checkbox" class="form-check-input" [(ngModel)]="comp.checked"
-                         [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()" />
+                    [ngStyle]="getChildStyle(comp, parent)"
+                    (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()"  (contextmenu)="contextMenu.showContextMenu($event, comp)"/>
                   <span class="form-check-label">{{ comp.text || 'Checkbox' }}</span>
                 </label>
               </div>
               <div *ngSwitchCase="'radio-group'" class="form-group" [ngClass]="comp.class"
-                   [ngStyle]="getChildStyle(comp, parent)">
+                [ngStyle]="getChildStyle(comp, parent)">
                 <label *ngFor="let opt of comp.options; let i = index" class="form-check">
                   <input type="radio" class="form-check-input" [name]="comp.id" [value]="opt" [(ngModel)]="comp.value"
-                         [ngClass]="comp.radioStyle" [ngStyle]="getChildStyle(comp, parent)"
-                         (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()" />
+                    [ngClass]="comp.radioStyle" [ngStyle]="getChildStyle(comp, parent)"
+                    (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()" (contextmenu)="contextMenu.showContextMenu($event, comp)"/>
                   <span class="form-check-label">{{ opt }}</span>
                 </label>
               </div>
 
               <!-- Button -->
               <button *ngSwitchCase="'button'" type="button" class="btn" [ngClass]="comp.btnStyle || 'btn-primary'"
-                      [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()">
+                [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()" (contextmenu)="contextMenu.showContextMenu($event, comp)">
                 {{ comp.text || 'Button' }}
               </button>
 
               <!-- Image -->
               <img *ngSwitchCase="'image'" class="img-fluid" [src]="comp.src || 'https://via.placeholder.com/150'"
-                   [alt]="comp.alt" [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
-                   (click)="selectComponent(comp); $event.stopPropagation()" />
+                [alt]="comp.alt" [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
+                (click)="selectComponent(comp); $event.stopPropagation()"  (contextmenu)="contextMenu.showContextMenu($event, comp)"/>
 
               <!-- Icon -->
               <i *ngSwitchCase="'icon'" [class]="comp.iconClass || 'ti ti-box'" [ngClass]="comp.class"
-                 [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()"></i>
+                [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()"></i>
 
               <!-- Link -->
               <a *ngSwitchCase="'link'" [href]="comp.href || '#'" [ngClass]="comp.class"
-                 [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()">
+                [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()">
                 {{ comp.text || 'Link' }}
               </a>
 
               <!-- Divider -->
               <hr *ngSwitchCase="'divider'" [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
-                  (click)="selectComponent(comp); $event.stopPropagation()" />
+                (click)="selectComponent(comp); $event.stopPropagation()" />
 
               <!-- Progress -->
               <div *ngSwitchCase="'progress'" class="progress" style="height: 20px;" [ngClass]="comp.class"
-                   [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()">
+                [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()">
                 <div class="progress-bar" [style.width.%]="comp.progress || 0" [style.background-color]="comp.barColor">
                   {{ (comp.progress || 0) + '%' }}
                 </div>
@@ -218,22 +226,22 @@
 
               <!-- Video -->
               <video *ngSwitchCase="'video'" class="w-100" [src]="comp.src" [controls]="comp.controls"
-                     [autoplay]="comp.autoplay" [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
-                     (click)="selectComponent(comp); $event.stopPropagation()"></video>
+                [autoplay]="comp.autoplay" [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
+                (click)="selectComponent(comp); $event.stopPropagation()"></video>
 
               <!-- Iframe -->
               <iframe *ngSwitchCase="'iframe'" class="w-100" [src]="comp.src" [title]="comp.title"
-                      [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
-                      (click)="selectComponent(comp); $event.stopPropagation()"></iframe>
+                [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
+                (click)="selectComponent(comp); $event.stopPropagation()"></iframe>
 
               <!-- Table -->
               <table *ngSwitchCase="'table'" [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
-                     (click)="selectComponent(comp); $event.stopPropagation()">
+                (click)="selectComponent(comp); $event.stopPropagation()">
                 <thead>
                   <tr>
                     <th *ngFor="let header of comp.headers; let ci = index"
-                        [style.background-color]="getHeaderCellColor(ci, comp)"
-                        [style.color]="getTextColor(getHeaderCellColor(ci, comp))">
+                      [style.background-color]="getHeaderCellColor(ci, comp)"
+                      [style.color]="getTextColor(getHeaderCellColor(ci, comp))">
                       {{ header }}
                     </th>
                   </tr>
@@ -241,10 +249,10 @@
                 <tbody>
                   <tr *ngFor="let row of comp.rows; let ri = index">
                     <td *ngFor="let cell of row; let ci = index"
-                        [style.background-color]="getCellBackgroundColor(ri, ci, comp)"
-                        [style.color]="getTextColor(getCellBackgroundColor(ri, ci, comp))">
-                      <input *ngIf="selectedComponent?.id === comp.id" [formControl]="cellControls[ri][ci]" class="form-control"
-                             (click)="$event.stopPropagation()">
+                      [style.background-color]="getCellBackgroundColor(ri, ci, comp)"
+                      [style.color]="getTextColor(getCellBackgroundColor(ri, ci, comp))">
+                      <input *ngIf="selectedComponent?.id === comp.id" [formControl]="cellControls[ri][ci]"
+                      class="form-control" (click)="$event.stopPropagation()" (contextmenu)="contextMenu.showContextMenu($event, comp)"/>
                       <span *ngIf="selectedComponent?.id !== comp.id">{{ cell }}</span>
                     </td>
                   </tr>
@@ -262,39 +270,37 @@
 
           <!-- Top-level components -->
           <ng-container *ngFor="let comp of canvasComponents; trackBy: trackById">
-            <div cdkDrag
-                 [cdkDragData]="comp"
-                 (click)="selectComponent(comp); $event.stopPropagation()"
-                 [ngStyle]="getComponentStyle(comp)"
-                 [ngClass]="{
+            <div cdkDrag [cdkDragData]="comp" (click)="selectComponent(comp); $event.stopPropagation()"
+              [ngStyle]="getComponentStyle(comp)" [ngClass]="{
                    'border': selectedComponent?.id === comp.id,
                    'border-primary': selectedComponent?.id === comp.id,
                    'position-relative': true,
                    'canvas-item': true
                  }">
               <button *ngIf="selectedComponent?.id === comp.id"
-                      class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
-                      (click)="deleteSelected(); $event.stopPropagation()">✕</button>
+                class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                (click)="isConfirmVisible = true; $event.stopPropagation()">✕</button>
               <ng-template [ngTemplateOutlet]="renderComponent"
-                           [ngTemplateOutletContext]="{ $implicit: comp, parent: null }"></ng-template>
+                [ngTemplateOutletContext]="{ $implicit: comp, parent: null }"></ng-template>
             </div>
           </ng-container>
         </div>
-      </div>
+        <!-- Add this just before closing the main container div -->
+<app-context-menu
+  #contextMenu
+  [selectedComponent]="selectedComponent"
+  [components]="canvasComponents"
+  (componentsChange)="canvasComponents = $event"
+  (updateSelectedComponent)="selectedComponent = $event">
+</app-context-menu>
 
-      <!-- Save -->
-      <div class="text-end mt-3">
-        <button class="btn btn-primary" (click)="onSave()">Save</button>
       </div>
     </div>
 
     <!-- Properties Panel -->
     <div *ngIf="selectedComponent" class="properties-panel">
-      <app-properties-panel
-        [selectedComponent]="selectedComponent"
-        (componentUpdated)="onComponentUpdated($event)"
-        (save)="onSave()"
-        (cancel)="deselectComponent()"></app-properties-panel>
+      <app-properties-panel [selectedComponent]="selectedComponent" (componentUpdated)="onComponentUpdated($event)"
+        (cancel)="deselectComponent()" (toastMessage)="showToast($event)"></app-properties-panel>
     </div>
   </div>
 </div>

@@ -20,6 +20,8 @@ import { ContainerNavComponent } from './container-nav/container-nav.component';
 import { FieldSizeComponent } from './fieldsize/fieldsize.component';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+
 
 interface DashboardComponent {
   type: string;
@@ -55,8 +57,7 @@ interface DashboardComponent {
   colNumber?: number;
   flexDirection?: 'row' | 'column';
   justifyContent?: string;  // accepts "Left", "Right", etc.
-alignItems?: string;      // accepts "Top", "Space Between", etc.
-
+  alignItems?: string;      // accepts "Top", "Space Between", etc.
   gap?: string;
   padding?: string;
   background?: string;
@@ -88,9 +89,11 @@ alignItems?: string;      // accepts "Top", "Space Between", etc.
     VideoComponent,
     TableComponent,
     ContainerNavComponent,
-    FieldSizeComponent
+    FieldSizeComponent,
+    ConfirmDialogComponent
   ],
   templateUrl: './properties-panel.component.html',
+  styleUrls: ['./properties-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PropertiesPanelComponent implements OnChanges {
@@ -98,14 +101,19 @@ export class PropertiesPanelComponent implements OnChanges {
   @Output() save = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
   @Output() componentUpdated = new EventEmitter<DashboardComponent>();
+   @Output() toastMessage = new EventEmitter<string>();
 
   showCancelModal = false;
+  
   fontSizeValue = 14;
   textTransform: 'none' | 'uppercase' | 'lowercase' | 'capitalize' | 'sentence' = 'none';
   fieldSizeValue: string = 'medium'; // Initialize field size
   private updateSubject = new Subject<DashboardComponent>();
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {
+  constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    // ✅ inject ToastService
+  ) {
     this.updateSubject.pipe(debounceTime(300)).subscribe(updatedComponent => {
       this.componentUpdated.emit(updatedComponent);
       this.changeDetectorRef.markForCheck();
@@ -143,39 +151,26 @@ export class PropertiesPanelComponent implements OnChanges {
     }
   }
 
-  onSave() {
+ saveComponent() {
     this.save.emit();
-    this.showToast('✅ Saved successfully!');
-  }
-
-  onCancel() {
-    this.showCancelModal = true;
-  }
-
-  closeModal() {
-    this.showCancelModal = false;
-    this.changeDetectorRef.markForCheck();
+    this.toastMessage.emit('✅ saved successfully!');
   }
 
   discardChanges() {
     this.showCancelModal = false;
     this.selectedComponent = null;
     this.cancel.emit();
-    this.showToast('⚠️ Changes discarded');
+    this.toastMessage.emit('⚠️ Changes discarded');
     this.changeDetectorRef.markForCheck();
   }
 
-  showToast(message: string) {
-    const toast = document.createElement('div');
-    toast.className = 'toast-message';
-    toast.innerText = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 100);
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 500);
-    }, 2000);
+  onCancel() {
+    this.showCancelModal = true;
   }
+
+  
+
+ 
 
   capitalize(str: string): string {
     return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';

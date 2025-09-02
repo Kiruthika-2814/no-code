@@ -8,86 +8,11 @@ import { HeaderLayoutComponent } from './header-layout/header-layout.component';
 import { PropertiesPanelComponent } from './properties-panel/properties-panel.component';
 import { SafeHtmlPipe } from '../safe-html.pipe';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { PageManagerComponent } from './page-manager/page-manager.component';
-
-interface DashboardComponent {
-  type: string;
-  displayName?: string;
-  style?: string;
-  text?: string;
-  placeholder?: string;
-  value?: string;
-  options?: string[];
-  newOption?: string[];
-  headers?: string[];
-  rows?: any[][];
-  invert?: boolean;
-  src?: string;
-  alt?: string;
-  href?: string;
-  color?: string;
-  fontSize?: string;
-  fontWeight?: string;
-  bgColor?: string;
-  width?: string;
-  height?: string;
-  btnStyle?: string;
-  iconClass?: string;
-  controls?: boolean;
-  autoplay?: boolean;
-  items?: any[];
-  active?: boolean;
-  link?: string;
-  icon?: string;
-  label?: string;
-  id: string;
-  children?: DashboardComponent[];
-  progress?: number;
-  barColor?: string;
-  alertType?: string;
-  title?: string;
-  content?: string;
-  borderRadius?: string;
-  objectFit?: 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
-  class?: string;
-  oddColumnColor?: string;
-  evenColumnColor?: string;
-  oddRowColor?: string;
-  evenRowColor?: string;
-  headerBgColor?: string;
-  specificCellColor?: string;
-  rowNumber?: number;
-  colNumber?: number;
-  flexDirection?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
-  flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
-  justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
-  alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
-  alignContent?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'stretch';
-  gap?: string;
-  alignSelf?: 'auto' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
-  highlightedRows?: { [rowIndex: number]: string };
-  highlightedCols?: { [colIndex: number]: string };
-  highlightedCells?: { [key: string]: string };
-  headerColors?: string[];
-  cellColors?: string[];
-  checked?: boolean;
-  radioStyle?: string;
-  listType?: 'ordered' | 'unordered';
-  action?: string;
-  minWidth?: string;
-  minHeight?: string;
-  fontFamily?: string;
-  fontStyle?: string;
-  textDecoration?: string;
-  textAlign?: string;
-  textStyle?: 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize' | 'sentence';
-}
-
-interface CanvasConfig {
-  flexDirection: 'row' | 'column' | 'row-reverse' | 'column-reverse';
-  justifyContent: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around';
-}
+import { ToastComponent } from './toast/toast.component';
+import { HostListener } from '@angular/core';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { ContextMenuComponent } from './context-menu/context-menu.component';
+import { DashboardComponent } from './models/dashboard-model';
 
 @Component({
   selector: 'app-root',
@@ -102,7 +27,9 @@ interface CanvasConfig {
     PropertiesPanelComponent,
     SafeHtmlPipe,
     SidebarComponent,
-    PageManagerComponent
+    ToastComponent,
+    ConfirmDialogComponent,
+    ContextMenuComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -113,7 +40,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   canvasComponents: DashboardComponent[] = [];
   sidebarGroups: any[] = [];
   selectedComponent: DashboardComponent | null = null;
-  canvasConfig: CanvasConfig = { flexDirection: 'row', justifyContent: 'flex-start' };
   searchTerm: string = '';
   isCollapsed: boolean = false;
   highlightRowIndex: number = 0;
@@ -124,20 +50,32 @@ export class AppComponent implements OnInit, AfterViewInit {
   highlightCellColor: string = '#ffccee';
   cellControls: FormControl[][] = [];
   checkboxValue: any[] = [];
-  flexDirections: CanvasConfig['flexDirection'][] = ['row', 'column', 'row-reverse', 'column-reverse'];
-  justifyContents: CanvasConfig['justifyContent'][] = ['flex-start', 'center', 'flex-end', 'space-between', 'space-around'];
   fontWeights: (string | number)[] = ['normal', 'bold', 'bolder', 'lighter', 100, 200, 300, 400, 500, 600, 700, 800, 900];
   sidebarConnectedTo: string[] = ['canvasList'];
-  canvasConnectedTo: string[] = ['sidebarList'];
-
+  canvasConnectedTo: string[] = [];
+ toastMessage = '';
+  toastVisible = false;
   constructor(public http: HttpClient, public changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.loadJson();
-    this.initializeDefaultContainer();
-    this.updateConnectedLists();
-    console.log('Canvas Components on Init:', JSON.stringify(this.canvasComponents, null, 2));
-  }
+  this.loadJson();
+  this.initializeDefaultContainer();
+  this.updateConnectedLists();
+
+  // Ensure every component has `properties` field
+  const normalizeProperties = (components: DashboardComponent[]): DashboardComponent[] => {
+    return components.map(c => ({
+      ...c,
+      properties: c.properties || {},
+      children: c.children ? normalizeProperties(c.children) : []
+    }));
+  };
+
+  this.canvasComponents = normalizeProperties(this.canvasComponents);
+
+  console.log('Canvas Components on Init:', JSON.stringify(this.canvasComponents, null, 2));
+}
+
 
   ngAfterViewInit() {
     this.changeDetectorRef.markForCheck();
@@ -207,7 +145,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       id: comp.id || this.generateUniqueId(),
       displayName: comp.displayName || this.capitalize(type),
       placeholder: comp.placeholder || `Enter ${type} placeholder`,
-      style: comp.style || '', // Ensure style is always a string
+      style: comp.style || '',
       options: comp.options || (['select', 'radio-group', 'checkbox'].includes(type) ? [] : undefined),
       headers: comp.headers || (type === 'table' ? ['Header 1', 'Header 2'] : undefined),
       rows: comp.rows || (type === 'table' ? [['Data 1', 'Data 2']] : undefined),
@@ -221,12 +159,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       specificCellColor: comp.specificCellColor || '#ffffcc',
       rowNumber: comp.rowNumber || 0,
       colNumber: comp.colNumber || 0,
-      flexDirection: ['container', 'nav'].includes(type) ? (comp.flexDirection || 'column') : undefined,
-      flexWrap: ['container', 'nav'].includes(type) ? (comp.flexWrap || 'wrap') : undefined,
-      justifyContent: ['container', 'nav'].includes(type) ? (comp.justifyContent || 'flex-start') : undefined,
-      alignItems: ['container', 'nav'].includes(type) ? (comp.alignItems || 'stretch') : undefined,
-      alignContent: ['container', 'nav'].includes(type) ? (comp.alignContent || 'stretch') : undefined,
-      gap: ['container', 'nav'].includes(type) ? (comp.gap || '12px') : undefined,
       icon: comp.icon || this.getDefaultIcon(type),
       checked: type === 'checkbox' ? (comp.checked ?? false) : undefined,
       radioStyle: type === 'radio-group' ? (comp.radioStyle || 'form-check-input') : undefined,
@@ -265,11 +197,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     return 'comp-' + Math.random().toString(36).substr(2, 9);
   }
 
-  getAllContainerIds(excludeId?: string): string[] {
+  getAllContainerIds(): string[] {
     const ids: string[] = [];
     const collect = (list: DashboardComponent[]) => {
       (list || []).forEach(c => {
-        if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
+        if (c && ['container', 'nav'].includes(c.type) && c.id) {
           ids.push(c.id);
         }
         if (c.children?.length) collect(c.children);
@@ -279,13 +211,31 @@ export class AppComponent implements OnInit, AfterViewInit {
     return ids;
   }
 
-  getConnectedLists(excludeId?: string): string[] {
-    return ['sidebarList', 'canvasList', ...this.getAllContainerIds(excludeId)];
+  getDescendantContainerIds(comp: DashboardComponent): string[] {
+    const ids: string[] = [];
+    const collect = (list: DashboardComponent[]) => {
+      (list || []).forEach(c => {
+        if (c && ['container', 'nav'].includes(c.type) && c.id) {
+          ids.push(c.id);
+        }
+        if (c.children?.length) collect(c.children);
+      });
+    };
+    collect(comp.children || []);
+    return ids;
+  }
+
+  getConnectedLists(comp: DashboardComponent | null): string[] {
+    if (comp === null) {
+      return this.getAllContainerIds();
+    } else {
+      return this.getDescendantContainerIds(comp);
+    }
   }
 
   updateConnectedLists(): void {
     this.sidebarConnectedTo = ['canvasList', ...this.getAllContainerIds()];
-    this.canvasConnectedTo = ['sidebarList', ...this.getAllContainerIds()];
+    this.canvasConnectedTo = this.getConnectedLists(null);
     console.log('Updated connected lists:', {
       sidebarConnectedTo: this.sidebarConnectedTo,
       canvasConnectedTo: this.canvasConnectedTo
@@ -320,11 +270,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     }
     targetArray.push(newContainer);
-    this.canvasComponents = [...this.canvasComponents]; // Ensure immutability
+    this.canvasComponents = [...this.canvasComponents];
     if (parentComponent) {
       this.onComponentUpdated(parentComponent);
     }
-    // Always select the new container
     this.selectComponent(newContainer);
     this.updateConnectedLists();
     this.changeDetectorRef.detectChanges();
@@ -342,7 +291,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       icon: this.getDefaultIcon('container')
     });
     this.canvasComponents = [defaultContainer];
-    // Always select the default container
     this.selectComponent(defaultContainer);
     this.updateConnectedLists();
     this.changeDetectorRef.detectChanges();
@@ -385,12 +333,12 @@ export class AppComponent implements OnInit, AfterViewInit {
 
       if (resolvedTarget && ['container', 'nav'].includes(resolvedTarget.type)) {
         if (!resolvedTarget.children) resolvedTarget.children = [];
-        resolvedTarget.children.push(newComp); // Append to end
+        resolvedTarget.children.push(newComp);
         this.onComponentUpdated(resolvedTarget);
         console.log('Added new component into container:', resolvedTarget.id, newComp.id, newComp.type);
       } else {
-        this.canvasComponents.push(newComp); // Append to end
-        this.canvasComponents = [...this.canvasComponents]; // Ensure immutability
+        this.canvasComponents.push(newComp);
+        this.canvasComponents = [...this.canvasComponents];
         console.log('Added new component into main canvas:', newComp.id, newComp.type);
       }
       newCompOrMoved = newComp;
@@ -404,10 +352,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       console.log('Moved component:', newCompOrMoved.id, newCompOrMoved.type);
     }
 
-    // Ensure immutability for canvasComponents
     this.canvasComponents = [...this.canvasComponents];
 
-    // Only select the target container if it's a container/nav, or the new component if it's a container/nav
     if (newCompOrMoved && ['container', 'nav'].includes(newCompOrMoved.type)) {
       this.selectComponent(newCompOrMoved);
       console.log('Selected new container:', newCompOrMoved.id, newCompOrMoved.type);
@@ -438,7 +384,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   selectComponent(comp: DashboardComponent) {
     if (this.selectedComponent?.id !== comp.id) {
-      this.selectedComponent = comp; // Use reference to maintain reactivity
+      this.selectedComponent = comp;
       this.initializeCellControls();
       console.log('Selected Component:', this.selectedComponent.id, this.selectedComponent.type);
       this.changeDetectorRef.detectChanges();
@@ -468,11 +414,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     targetArray.push(newComp);
-    this.canvasComponents = [...this.canvasComponents]; // Ensure immutability
+    this.canvasComponents = [...this.canvasComponents];
     if (parentComponent) {
       this.onComponentUpdated(parentComponent);
     }
-    // Only select the new component if it's a container or nav
     if (['container', 'nav'].includes(newComp.type)) {
       this.selectComponent(newComp);
       console.log('Selected new container:', newComp.id, newComp.type);
@@ -547,15 +492,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       'text-decoration': comp.textDecoration || styleObj['text-decoration'] || null,
       'text-align': comp.textAlign || styleObj['text-align'] || null,
       'text-transform': comp.textTransform || styleObj['text-transform'] || null,
-      display: isContainerOrNav ? 'flex' : styleObj['display'] || 'block',
-      'flex-direction': isContainerOrNav ? comp.flexDirection || 'column' : styleObj['flex-direction'] || null,
-      'flex-wrap': isContainerOrNav ? comp.flexWrap || 'wrap' : styleObj['flex-wrap'] || null,
-      'justify-content': isContainerOrNav ? comp.justifyContent || 'flex-start' : styleObj['justify-content'] || null,
-      'align-items': isContainerOrNav ? comp.alignItems || 'stretch' : styleObj['align-items'] || null,
-      'align-content': isContainerOrNav ? comp.alignContent || 'stretch' : styleObj['align-content'] || null,
-      gap: isContainerOrNav ? comp.gap || '12px' : styleObj['gap'] || null,
-      flex: comp.type !== 'container' && comp.type !== 'nav' ? '0 0 auto' : null,
-      'max-width': isContainerOrNav ? 'none' : null,
+      display: isContainerOrNav ? 'block' : styleObj['display'] || 'block',
       'box-sizing': 'border-box',
       padding: isContainerOrNav ? '12px' : styleObj['padding'] || null,
       '--odd-column-color': comp.oddColumnColor || '#f0f0f0',
@@ -595,24 +532,15 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     const base = this.getComponentStyle(child);
     if (!parent) {
-      base['flex'] = child.type === 'container' || child.type === 'nav' ? '1 1 100%' : '0 0 auto';
-      base['min-width'] = child.minWidth || (child.type === 'container' || child.type === 'nav' ? '300px' : 'auto');
-      base['min-height'] = child.minHeight || (child.type === 'container' || child.type === 'nav' ? '150px' : 'auto');
-      base['height'] = child.height || 'auto';
-    } else if (parent.flexDirection === 'column') {
-      base['flex'] = '0 1 100%';
-      base['width'] = child.width || '100%';
-      base['min-width'] = child.minWidth || (child.type === 'container' || child.type === 'nav' ? '300px' : 'auto');
-      base['min-height'] = child.minHeight || (child.type === 'container' || child.type === 'nav' ? '150px' : 'auto');
-      base['height'] = child.height || 'auto';
-      base['align-self'] = child.alignSelf || 'stretch';
-    } else if (parent.type === 'container' || parent.type === 'nav') {
-      base['flex'] = child.type === 'container' || child.type === 'nav' ? '1 1 100%' : '0 0 auto';
-      base['min-width'] = child.minWidth || (child.type === 'container' || child.type === 'nav' ? '300px' : 'auto');
-      base['min-height'] = child.minHeight || (child.type === 'container' || child.type === 'nav' ? '150px' : 'auto');
       base['width'] = child.width || (child.type === 'container' || child.type === 'nav' ? '100%' : 'auto');
+      base['min-width'] = child.minWidth || (child.type === 'container' || child.type === 'nav' ? '300px' : 'auto');
+      base['min-height'] = child.minHeight || (child.type === 'container' || child.type === 'nav' ? '150px' : 'auto');
       base['height'] = child.height || 'auto';
-      base['align-self'] = child.alignSelf || 'auto';
+    } else if (parent.type === 'container' || parent.type === 'nav') {
+      base['width'] = child.width || (child.type === 'container' || child.type === 'nav' ? '100%' : 'auto');
+      base['min-width'] = child.minWidth || (child.type === 'container' || child.type === 'nav' ? '300px' : 'auto');
+      base['min-height'] = child.minHeight || (child.type === 'container' || child.type === 'nav' ? '150px' : 'auto');
+      base['height'] = child.height || 'auto';
     }
 
     return { ...base, ...styleObj };
@@ -693,42 +621,73 @@ export class AppComponent implements OnInit, AfterViewInit {
     return brightness > 125 ? '#000' : '#fff';
   }
 
-  deleteSelected() {
-    if (!this.selectedComponent) return;
+  //delete
+  
+  isConfirmVisible: boolean = false;
+  handleDelete() {
+  if (!this.selectedComponent) return;
 
-    const compName = this.selectedComponent.displayName || 'this component';
-    if (confirm(`Are you sure you want to delete "${compName}"?`)) {
-      const deleteFromComponents = (components: DashboardComponent[]): DashboardComponent[] => {
-        return components.filter(comp => {
-          if (comp.id === this.selectedComponent!.id) return false;
-          if (comp.children) {
-            comp.children = deleteFromComponents(comp.children);
-          }
-          return true;
-        });
-      };
-      this.canvasComponents = deleteFromComponents(this.canvasComponents);
-      this.selectedComponent = null;
-      this.updateConnectedLists();
-      this.changeDetectorRef.detectChanges();
-      this.changeDetectorRef.markForCheck();
-      console.log('Canvas Components after delete:', JSON.stringify(this.canvasComponents, null, 2));
-    }
+  const deleteFromComponents = (components: DashboardComponent[]): DashboardComponent[] => {
+    return components.filter(comp => {
+      if (comp.id === this.selectedComponent!.id) return false;
+      if (comp.children) {
+        comp.children = deleteFromComponents(comp.children);
+      }
+      return true;
+    });
+  };
+  this.canvasComponents = deleteFromComponents(this.canvasComponents);
+  this.selectedComponent = null;
+  this.updateConnectedLists();
+  this.changeDetectorRef.detectChanges();
+  this.changeDetectorRef.markForCheck();
+  console.log('Canvas Components after delete:', JSON.stringify(this.canvasComponents, null, 2));
+  this.isConfirmVisible = false; // Close the dialog after deletion
+}
+
+// Add this for keyboard shortcut
+@HostListener('window:keydown.delete', ['$event'])
+onDeleteKey(event: KeyboardEvent) {
+  if (this.selectedComponent && !this.isConfirmVisible) {
+    event.preventDefault(); // Prevent default browser behavior if needed
+    this.isConfirmVisible = true;
+  }
+}
+@HostListener('window:keydown.enter', ['$event'])
+onEnterKey(event: KeyboardEvent) {
+  if (this.isConfirmVisible) {
+    event.preventDefault(); // Prevent default behavior like form submit
+    this.handleDelete();
+  }
+}
+
+  
+//save toast
+  showToast(message: string) {
+    this.toastMessage = message;
+    this.toastVisible = true;
+    setTimeout(() => this.toastVisible = false, 2000);
   }
 
   saveJson() {
     if (this.jsonData?.[0]?.components?.[0]) {
       this.jsonData[0].components[0].children = this.canvasComponents;
     }
+
     this.http.post('http://localhost:3001/save-ui', this.jsonData).subscribe({
-      next: () => alert('UI saved successfully to ui.json'),
-      error: (err) => console.error('Error saving JSON:', err)
+      next: () => this.showToast('✅ saved successfully to ui.json'),
+      error: (err) => {
+        console.error('Error saving JSON:', err);
+        this.showToast('❌ Failed to save UI');
+      }
     });
   }
 
   onSave() {
     this.saveJson();
   }
+
+  
 
   get filteredPaletteComponents(): DashboardComponent[] {
     if (!this.searchTerm.trim()) return this.paletteComponents;
@@ -751,4 +710,3 @@ export class AppComponent implements OnInit, AfterViewInit {
     console.log('Selected after adding from sidebar:', this.selectedComponent?.id, this.selectedComponent?.type);
   }
 }
-

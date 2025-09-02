@@ -33,6 +33,9 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0; /* removed top gap */
+  flex-shrink: 0;       /* ⬅ prevents sidebar from shrinking */
+  position: relative;   /* ⬅ instead of absolute/fixed */
+  z-index: 100;    
 }
 
 /* Collapsed Sidebar */
