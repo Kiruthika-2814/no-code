@@ -32,10 +32,7 @@
   justify-content: flex-start;
   background: #fbfcf8;
   color: var(--text-color);
-<<<<<<< HEAD
-  overflow: auto; /* Ensure scrolling works */
-=======
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
 }
 
 /* Scrollbar styling */
@@ -79,11 +76,7 @@
   background: $blue-100;
 }
 
-<<<<<<< HEAD
-/* Canvas Container (for container and nav components) */
-=======
-/* Canvas Container */
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
 .canvas-container {
   position: relative;
   min-width: 300px;
@@ -92,21 +85,13 @@
   background: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 12px;
-<<<<<<< HEAD
+
   display: flex; /* Ensure flex for children */
   flex-direction: column; /* Default for containers */
   gap: 12px;
 }
 
-/* Nested container children */
-.canvas-container [cdkDropList] {
-  min-height: 100px; /* Ensure nested containers have space */
-  min-width: 100%;
-  background: #f9f9f9; /* Slightly different background for visibility */
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 8px;
-}
+
 
 /* Ensure children are visible */
 .canvas-container .canvas-child {
@@ -121,46 +106,20 @@
   color: #{$gray-500};
 }
 
-=======
+
 }
 
-/* Column */
-.column {
-  position: relative;
-  min-width: 100px;
-  min-height: 100px;
-  border: 1px solid #ddd;
+/* Nested container children */
+.canvas-container [cdkDropList] {
+  min-height: 100px; /* Ensure nested containers have space */
+  min-width: 100%;
+  background: #f9f9f9; /* Slightly different background for visibility */
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: #f9f9f9;
   padding: 8px;
 }
 
-.column:hover {
-  background: $blue-100; /* Changed from $blue-50 to $blue-100 */
-}
 
-/* Resize Handle */
-.resize-handle {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  cursor: se-resize;
-  background: $blue-500;
-  border-radius: 50%;
-  z-index: 100;
-  transition: background 0.2s ease;
-}
-
-.resize-handle:hover {
-  background: $blue-700;
-  transform: scale(1.2);
-}
-
-
-
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
 /* Loading State */
 .component-wrapper.loading {
   position: relative;
@@ -190,11 +149,9 @@
     width: 200px;
     font-size: 12px;
   }
-<<<<<<< HEAD
+
   .component-wrapper, .canvas-container {
-=======
-  .component-wrapper, .canvas-container, .column {
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
     min-width: 200px;
     min-height: 100px;
   }
@@ -215,12 +172,10 @@
   }
 }
 
-/* General Transitions */
-<<<<<<< HEAD
+
+
 .nav-link, .component-wrapper, .canvas-container {
-=======
-.nav-link, .component-wrapper, .canvas-container, .column {
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
   transition: all 0.3s ease;
 }
 
@@ -276,10 +231,7 @@
   box-shadow: 0 0 5px rgba(0,123,255,0.4);
 }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
 /* Toggle button style */
 button.rounded-circle {
   width: 60px;

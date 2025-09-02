@@ -53,16 +53,12 @@ interface DashboardComponent {
   specificCellColor?: string;
   rowNumber?: number;
   colNumber?: number;
-<<<<<<< HEAD
+
   flexDirection?: 'row' | 'column';
   justifyContent?: string;  // accepts "Left", "Right", etc.
 alignItems?: string;      // accepts "Top", "Space Between", etc.
 
-=======
-  flexDirection?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
-  justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
-  alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
   gap?: string;
   padding?: string;
   background?: string;

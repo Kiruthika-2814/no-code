@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 import {
   Component,
@@ -9,9 +8,7 @@ import {
   OnChanges,
   SimpleChanges
 } from '@angular/core';
-=======
-import { Component, Input, Output, EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -19,13 +16,14 @@ interface DashboardComponent {
   type: string;
   id: string;
   style?: string;
-<<<<<<< HEAD
+
   display?: 'flex' | 'grid';
   flexDirection?: 'row' | 'column';
   justifyContent?: string;
   alignItems?: string;
   gapValue?: number;
   gapUnit?: string;
+
   gap?: string;
   background?: string;
   gridColumns?: number;
@@ -33,17 +31,21 @@ interface DashboardComponent {
   gridAutoFlow?: 'row' | 'column' | 'dense';
   justifyItems?: string;
   gridTemplateAreas?: string;
-=======
-  flexDirection?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
-  justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
-  alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
+
+
   gap?: string;
-  padding?: string;
   background?: string;
+
   borderRadius?: string;
   shadow?: string;
   overflow?: string;
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
+  gridColumns?: number;
+  gridRows?: number;
+  gridAutoFlow?: 'row' | 'column' | 'dense';
+  justifyItems?: string;
+  gridTemplateAreas?: string;
+
 }
 
 @Component({
@@ -56,24 +58,21 @@ export class ContainerNavComponent implements OnChanges {
   @Input() selectedComponent: DashboardComponent | null = null;
   @Output() componentUpdated = new EventEmitter<DashboardComponent>();
 
-<<<<<<< HEAD
+
   flexDirections: string[] = ['row', 'column'];
   justifyOptions: string[] = ['Left', 'Center', 'Right', 'Space Between', 'Space Around'];
   alignOptions: string[] = ['Top', 'Center', 'Bottom', 'Stretch'];
   gapUnits: string[] = ['px', 'em', 'rem', 'vw', 'vh', '%'];
   gridAlignOptions: string[] = ['start', 'center', 'end', 'stretch'];
-=======
-  flexDirections: string[] = ['row', 'column', 'row-reverse', 'column-reverse'];
-  justifyContents: string[] = ['flex-start', 'center', 'flex-end', 'space-between', 'space-around', 'space-evenly'];
-  alignItems: string[] = ['flex-start', 'flex-end', 'center', 'baseline', 'stretch'];
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
+
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedComponent'] && this.selectedComponent) {
       this.selectedComponent = { ...this.selectedComponent };
-<<<<<<< HEAD
+
 
       // Flex defaults
       if (!this.selectedComponent.display) this.selectedComponent.display = 'flex';
@@ -93,7 +92,8 @@ export class ContainerNavComponent implements OnChanges {
 
       this.updateGap();
       this.updateCanvasComponent();
-=======
+
+
       this.selectedComponent.flexDirection = this.selectedComponent.flexDirection ?? 'column';
       this.selectedComponent.justifyContent = this.selectedComponent.justifyContent ?? 'flex-start';
       this.selectedComponent.alignItems = this.selectedComponent.alignItems ?? 'stretch';
@@ -103,12 +103,12 @@ export class ContainerNavComponent implements OnChanges {
       this.selectedComponent.borderRadius = this.selectedComponent.borderRadius ?? '';
       this.selectedComponent.shadow = this.selectedComponent.shadow ?? 'none';
       this.selectedComponent.overflow = this.selectedComponent.overflow ?? 'visible';
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
       this.changeDetectorRef.detectChanges();
     }
   }
 
-<<<<<<< HEAD
+
   // ----------------- GAP HANDLING -----------------
   private updateGap(): void {
     if (this.selectedComponent) {
@@ -212,7 +212,7 @@ export class ContainerNavComponent implements OnChanges {
     }
   }
 
-  // ----------------- MAIN UPDATE -----------------
+ 
   updateCanvasComponent(): void {
     if (!this.selectedComponent?.id || !this.selectedComponent?.type) return;
 
@@ -238,6 +238,7 @@ export class ContainerNavComponent implements OnChanges {
     this.componentUpdated.emit(updatedComponent);
     this.changeDetectorRef.detectChanges();
   }
+
 
   // ----------------- ALIGN HANDLERS -----------------
   onAlignXChange(value: string) {
@@ -276,30 +277,3 @@ export class ContainerNavComponent implements OnChanges {
 }
 
 
-=======
-  updateCanvasComponent(): void {
-    if (!this.selectedComponent?.id || !this.selectedComponent?.type) return;
-    const updatedComponent: DashboardComponent = { ...this.selectedComponent };
-    const styles: string[] = ['display:flex'];
-    if (updatedComponent.flexDirection) styles.push(`flex-direction:${updatedComponent.flexDirection}`);
-    if (updatedComponent.justifyContent) styles.push(`justify-content:${updatedComponent.justifyContent}`);
-    if (updatedComponent.alignItems) styles.push(`align-items:${updatedComponent.alignItems}`);
-    if (updatedComponent.gap) styles.push(`gap:${updatedComponent.gap}px`);
-    if (updatedComponent.padding) styles.push(`padding:${updatedComponent.padding}`);
-    if (updatedComponent.background) styles.push(`background:${updatedComponent.background}`);
-    if (updatedComponent.borderRadius) styles.push(`border-radius:${updatedComponent.borderRadius}`);
-    if (updatedComponent.shadow && updatedComponent.shadow !== 'none') {
-      const shadows: { [key: string]: string } = {
-        sm: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-        md: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-        lg: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
-      };
-      styles.push(`box-shadow:${shadows[updatedComponent.shadow] || 'none'}`);
-    }
-    if (updatedComponent.overflow) styles.push(`overflow:${updatedComponent.overflow}`);
-    updatedComponent.style = styles.join(';');
-    this.componentUpdated.emit(updatedComponent);
-    this.changeDetectorRef.detectChanges();
-  }
-}
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757

@@ -8,11 +8,9 @@ import { HeaderLayoutComponent } from './header-layout/header-layout.component';
 import { PropertiesPanelComponent } from './properties-panel/properties-panel.component';
 import { SafeHtmlPipe } from '../safe-html.pipe';
 import { SidebarComponent } from './sidebar/sidebar.component';
-<<<<<<< HEAD
+
 import { PageManagerComponent } from './page-manager/page-manager.component';
 
-=======
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
 
 interface DashboardComponent {
   type: string;
@@ -105,17 +103,11 @@ interface CanvasConfig {
     HeaderLayoutComponent,
     PropertiesPanelComponent,
     SafeHtmlPipe,
-<<<<<<< HEAD
-<<<<<<< HEAD
-    SidebarComponent
-    
-=======
+
+   
     SidebarComponent,
     PageManagerComponent
->>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a
-=======
-    SidebarComponent
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -141,11 +133,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   justifyContents: CanvasConfig['justifyContent'][] = ['flex-start', 'center', 'flex-end', 'space-between', 'space-around'];
   fontWeights: (string | number)[] = ['normal', 'bold', 'bolder', 'lighter', 100, 200, 300, 400, 500, 600, 700, 800, 900];
   sidebarConnectedTo: string[] = ['canvasList'];
-<<<<<<< HEAD
-  canvasConnectedTo: string[] = ['sidebarList'];
-=======
+
   canvasConnectedTo: string[] = [];
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
 
   constructor(public http: HttpClient, public changeDetectorRef: ChangeDetectorRef) {}
 
@@ -282,31 +271,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     return 'comp-' + Math.random().toString(36).substr(2, 9);
   }
 
-<<<<<<< HEAD
-  getAllContainerIds(excludeId?: string): string[] {
-    const ids: string[] = [];
-    const collect = (list: DashboardComponent[]) => {
-      (list || []).forEach(c => {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-        if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
-=======
 
-        if (c && ['container', 'nav'].includes(c.type) && c.id) {
 
-        if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
 
->>>>>>> Stashed changes
-=======
-        if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
->>>>>>> 4d4cc3aaeabc95a34a4c0abd7997ebafe2fee54a
-=======
+       
   getAllContainerIds(): string[] {
     const ids: string[] = [];
     const collect = (list: DashboardComponent[]) => {
       (list || []).forEach(c => {
         if (c && ['container', 'nav'].includes(c.type) && c.id) {
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
           ids.push(c.id);
         }
         if (c.children?.length) collect(c.children);
@@ -316,10 +290,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     return ids;
   }
 
-<<<<<<< HEAD
-  getConnectedLists(excludeId?: string): string[] {
-    return ['sidebarList', 'canvasList', ...this.getAllContainerIds(excludeId)];
-=======
   getDescendantContainerIds(comp: DashboardComponent): string[] {
     const ids: string[] = [];
     const collect = (list: DashboardComponent[]) => {
@@ -340,16 +310,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     } else {
       return this.getDescendantContainerIds(comp);
     }
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
   }
 
   updateConnectedLists(): void {
     this.sidebarConnectedTo = ['canvasList', ...this.getAllContainerIds()];
-<<<<<<< HEAD
-    this.canvasConnectedTo = ['sidebarList', ...this.getAllContainerIds()];
-=======
-    this.canvasConnectedTo = this.getConnectedLists(null);
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
+    this.canvasConnectedTo = ['sidebarList', ...this.getAllContainerIds()]
+   
     console.log('Updated connected lists:', {
       sidebarConnectedTo: this.sidebarConnectedTo,
       canvasConnectedTo: this.canvasConnectedTo
@@ -463,14 +431,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       newCompOrMoved = event.container.data[event.currentIndex];
       console.log('Reordered component:', newCompOrMoved.id, newCompOrMoved.type);
     } else {
-<<<<<<< HEAD
+
       // Restrict transfers: only allow to canvas or from sidebar
       if (event.container.id !== 'canvasList' && event.previousContainer.id !== 'sidebarList') {
         console.log('Restricted move: not allowing transfer from ' + event.previousContainer.id + ' to ' + event.container.id);
         return;
       }
-=======
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       newCompOrMoved = event.container.data[event.currentIndex];
       console.log('Moved component:', newCompOrMoved.id, newCompOrMoved.type);
@@ -822,9 +789,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.addComponentToCanvas(comp);
     console.log('Selected after adding from sidebar:', this.selectedComponent?.id, this.selectedComponent?.type);
   }
-<<<<<<< HEAD
 }
 
-=======
-}
->>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
+
