@@ -19,15 +19,26 @@
   --border-color: #{$gray-600};
   --hover-color: #{$blue-400};
 }
+<<<<<<< HEAD
+/* Sidebar */
+.pc-sidebar {
+=======
 
 /* Sidebar Base */
 .pc-sidebar,
 .collapsed-sidebar,
 .expanded-sidebar {
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
   width: 250px;
   height: 100vh;
   border-right: 1px solid var(--border-color);
   font-size: 14px;
+<<<<<<< HEAD
+  padding-top: 10px;
+  background: linear-gradient(to bottom, #00c6ff, #0072ff);
+  color: #fff;
+  overflow-y: auto;
+=======
   background: linear-gradient(to bottom, #00c6ff, #0072ff);
   color: #fff;
   overflow-y: auto;
@@ -98,6 +109,7 @@
   width: 230px;
   border-color: #{$blue-600};
   box-shadow: 0 0 6px rgba(78, 115, 223, 0.3);
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
 }
 
 /* Sidebar nav links */
@@ -133,8 +145,11 @@
 .pc-sidebar .nav-link[aria-describedby]:hover::after {
   content: none;
 }
+<<<<<<< HEAD
+=======
 
 /* Sidebar Toggle */
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
 .pc-sidebar-toggle {
   width: 60px;
   height: 60px;
@@ -202,6 +217,82 @@
   opacity: 1;
 }
 
+<<<<<<< HEAD
+/* Logo */
+.logo-expanded {
+  max-width: 120px;
+  height: 50px;
+  margin: 0 auto 10px auto;
+  display: block;
+  object-fit: contain;
+}
+
+.logo-collapsed {
+  max-width: 50px;
+  height: 30px;
+  margin: 0 auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Search Box */
+.search-box {
+  width: 150px;
+  max-width: 200px;
+  height: 32px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #{$gray-300};
+  padding: 4px 10px;
+  transition: width 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-box:focus {
+  width: 230px;
+  border-color: #{$blue-600};
+  box-shadow: 0 0 6px rgba(78, 115, 223, 0.3);
+}
+
+/* Sidebar Wrapper */
+.collapsed-sidebar,
+.expanded-sidebar {
+  height: 100vh;
+  transition: width 0.3s ease;
+  background: linear-gradient(to bottom, #00c6ff, #0072ff);
+  color: white;
+  padding: 10px 5px;
+  overflow-y:visible;
+}
+
+/* Collapsed Sidebar */
+.collapsed-sidebar {
+  width: 70px !important;
+  text-align: center;
+}
+
+.collapsed-sidebar h5,
+.collapsed-sidebar .search-box-wrapper,
+.collapsed-sidebar .search-box {
+  display: none;
+}
+
+.collapsed-sidebar img {
+  max-width: 50px;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Expanded Sidebar */
+.expanded-sidebar {
+  width: 250px !important;
+}
+
+.expanded-sidebar img {
+  max-width: 120px;
+  margin: 0 auto 10px auto;
+  display: block;
+}
+=======
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -221,3 +312,4 @@
 }
 
 
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757

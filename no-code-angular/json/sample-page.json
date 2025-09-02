@@ -1,5 +1,9 @@
 [
+<<<<<<< HEAD
+{
+=======
   {
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
     "pageName": "homePage",
     "sidebarGroups": [
       {
@@ -142,6 +146,8 @@
             "icon": "bi bi-textarea-resize"
           },
           {
+<<<<<<< HEAD
+=======
             "type": "name-group",
             "id": "nameFields",
             "displayName": "Name Fields",
@@ -170,6 +176,7 @@
           },
           
           {
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757
             "type": "select",
             "id": "dropdownExample",
             "displayName": "Dropdown",
@@ -281,6 +288,10 @@
       }
     ]
   }
+<<<<<<< HEAD
+]
+=======
 ]  
 
  
+>>>>>>> f6fa89423bb7e2a9241edef42f12e3feebd40757

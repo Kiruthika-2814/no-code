@@ -53,9 +53,11 @@ interface DashboardComponent {
   specificCellColor?: string;
   rowNumber?: number;
   colNumber?: number;
+
   flexDirection?: 'row' | 'column';
   justifyContent?: string;  // accepts "Left", "Right", etc.
 alignItems?: string;      // accepts "Top", "Space Between", etc.
+
 
   gap?: string;
   padding?: string;
