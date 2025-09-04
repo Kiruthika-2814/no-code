@@ -1,0 +1,16 @@
+<div class="context-menu" 
+     *ngIf="contextMenuVisible"
+     [ngStyle]="{'top': contextMenuStyle.top, 'left': contextMenuStyle.left}">
+     
+  <div class="menu-item" (click)="cutComponent()">Cut <span class="shortcut">Ctrl+X</span></div>
+  <div class="menu-item" (click)="copyComponent()">Copy <span class="shortcut">Ctrl+C</span></div>
+  <div class="menu-item" (click)="pasteComponent()">Paste <span class="shortcut">Ctrl+V</span></div>
+  <div class="menu-item" (click)="duplicateComponent()">Duplicate <span class="shortcut">Ctrl+D</span></div>
+  <div class="menu-item" (click)="deleteComponent()">Delete <span class="shortcut">Del</span></div>
+
+  <div class="divider"></div>
+  <div class="menu-item" (click)="copyProperties()">Copy Properties</div>
+  <div class="menu-item" (click)="pasteProperties()">Paste Properties</div>
+</div>
+
+<div class="overlay" *ngIf="contextMenuVisible" (click)="closeContextMenu()"></div>

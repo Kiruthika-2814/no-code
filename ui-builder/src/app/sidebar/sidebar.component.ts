@@ -1,4 +1,7 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+
+ import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -78,4 +81,5 @@ export class SidebarComponent {
   trackByIndex(index: number, item: any): number {
     return index;
   }
+
 }

@@ -17,7 +17,9 @@
 
       <!-- Center Canvas Area -->
       <div [ngClass]="{'col-10': !isCollapsed, 'col-11': isCollapsed}" style="height: 100%; overflow-y: auto;">
+
         <app-page-manager></app-page-manager>
+
         <h5>Canvas</h5>
         <button class="btn btn-primary mb-3" (click)="addNewContainer()">Add New Container</button>
 
@@ -50,7 +52,8 @@
                 <div cdkDropList
                      [id]="comp.id"
                      [cdkDropListData]="comp.children || []"
-                     [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
+
+                     [cdkDropListConnectedTo]="getConnectedLists(comp)"
                      (cdkDropListDropped)="drop($event, comp)"
                      (click)="selectComponent(comp); $event.stopPropagation()"
                      class="p-2 border rounded position-relative"
@@ -86,7 +89,10 @@
                 <div cdkDropList
                      [id]="comp.id"
                      [cdkDropListData]="comp.children || []"
-                     [cdkDropListConnectedTo]="getConnectedLists(comp.id)"
+
+                     [cdkDropListConnectedTo]="getConnectedLists(comp)"
+
+
                      (cdkDropListDropped)="drop($event, comp)"
                      (click)="selectComponent(comp); $event.stopPropagation()"
                      class="p-2 border rounded position-relative"
@@ -144,32 +150,31 @@
 
               <!-- Input Components -->
               <input *ngSwitchCase="'input'" class="form-control" [(ngModel)]="comp.text"
-                     [attr.placeholder]="comp.placeholder || 'Enter input here'" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
+                [attr.placeholder]="comp.placeholder || 'Enter input here'" [ngClass]="comp.class"
+                [ngStyle]="getChildStyle(comp, parent)"
+                (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()"
+                 />
               <input *ngSwitchCase="'email'" type="email" class="form-control" [(ngModel)]="comp.text"
-                     [attr.placeholder]="comp.placeholder || 'Enter email'" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
+                [attr.placeholder]="comp.placeholder || 'Enter email'" [ngClass]="comp.class"
+                [ngStyle]="getChildStyle(comp, parent)"
+                (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" 
+                />
               <textarea *ngSwitchCase="'textarea'" class="form-control" [(ngModel)]="comp.text"
-                        [attr.placeholder]="comp.placeholder || 'Enter details here'" [ngClass]="comp.class"
-                        [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()"></textarea>
-              <input *ngSwitchCase="'password'" type="password" class="form-control" [(ngModel)]="comp.text"
-                     [placeholder]="comp.placeholder" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
-              <input *ngSwitchCase="'number'" type="number" class="form-control" [(ngModel)]="comp.text"
-                     [placeholder]="comp.placeholder" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
-              <input *ngSwitchCase="'date'" type="date" class="form-control" [(ngModel)]="comp.text"
-                     [placeholder]="comp.placeholder" [ngClass]="comp.class"
-                     [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" />
+                [attr.placeholder]="comp.placeholder || 'Enter details here'" [ngClass]="comp.class"
+                [ngStyle]="getChildStyle(comp, parent)"
+                (ngModelChange)="onTextChange(comp, $event); $event.stopPropagation()" ></textarea>
+              
               <select *ngSwitchCase="'select'" class="form-select" [(ngModel)]="comp.value" [ngClass]="comp.class"
-                      [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()">
+                [ngStyle]="getChildStyle(comp, parent)"
+                (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()" >
                 <option *ngFor="let opt of comp.options" [value]="opt">{{ opt }}</option>
               </select>
               <div *ngSwitchCase="'checkbox'" class="form-group" [ngClass]="comp.class"
                    [ngStyle]="getChildStyle(comp, parent)">
                 <label class="form-check">
                   <input type="checkbox" class="form-check-input" [(ngModel)]="comp.checked"
-                         [ngStyle]="getChildStyle(comp, parent)" (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()" />
+                    [ngStyle]="getChildStyle(comp, parent)"
+                    (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()"  />
                   <span class="form-check-label">{{ comp.text || 'Checkbox' }}</span>
                 </label>
               </div>
@@ -177,22 +182,22 @@
                    [ngStyle]="getChildStyle(comp, parent)">
                 <label *ngFor="let opt of comp.options; let i = index" class="form-check">
                   <input type="radio" class="form-check-input" [name]="comp.id" [value]="opt" [(ngModel)]="comp.value"
-                         [ngClass]="comp.radioStyle" [ngStyle]="getChildStyle(comp, parent)"
-                         (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()" />
+                    [ngClass]="comp.radioStyle" [ngStyle]="getChildStyle(comp, parent)"
+                    (ngModelChange)="onComponentUpdated(comp); $event.stopPropagation()" />
                   <span class="form-check-label">{{ opt }}</span>
                 </label>
               </div>
 
               <!-- Button -->
               <button *ngSwitchCase="'button'" type="button" class="btn" [ngClass]="comp.btnStyle || 'btn-primary'"
-                      [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()">
+                [ngStyle]="getChildStyle(comp, parent)" (click)="selectComponent(comp); $event.stopPropagation()" >
                 {{ comp.text || 'Button' }}
               </button>
 
               <!-- Image -->
               <img *ngSwitchCase="'image'" class="img-fluid" [src]="comp.src || 'https://via.placeholder.com/150'"
-                   [alt]="comp.alt" [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
-                   (click)="selectComponent(comp); $event.stopPropagation()" />
+                [alt]="comp.alt" [ngClass]="comp.class" [ngStyle]="getChildStyle(comp, parent)"
+                (click)="selectComponent(comp); $event.stopPropagation()"  />
 
               <!-- Icon -->
               <i *ngSwitchCase="'icon'" [class]="comp.iconClass || 'ti ti-box'" [ngClass]="comp.class"
@@ -241,10 +246,10 @@
                 <tbody>
                   <tr *ngFor="let row of comp.rows; let ri = index">
                     <td *ngFor="let cell of row; let ci = index"
-                        [style.background-color]="getCellBackgroundColor(ri, ci, comp)"
-                        [style.color]="getTextColor(getCellBackgroundColor(ri, ci, comp))">
-                      <input *ngIf="selectedComponent?.id === comp.id" [formControl]="cellControls[ri][ci]" class="form-control"
-                             (click)="$event.stopPropagation()">
+                      [style.background-color]="getCellBackgroundColor(ri, ci, comp)"
+                      [style.color]="getTextColor(getCellBackgroundColor(ri, ci, comp))">
+                      <input *ngIf="selectedComponent?.id === comp.id" [formControl]="cellControls[ri][ci]"
+                      class="form-control" (click)="$event.stopPropagation()" >
                       <span *ngIf="selectedComponent?.id !== comp.id">{{ cell }}</span>
                     </td>
                   </tr>
@@ -297,4 +302,5 @@
         (cancel)="deselectComponent()"></app-properties-panel>
     </div>
   </div>
+
 </div>
