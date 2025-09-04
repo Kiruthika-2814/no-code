@@ -32,7 +32,7 @@
   justify-content: flex-start;
   background: #fbfcf8;
   color: var(--text-color);
-  overflow: auto; /* Ensure scrolling works */
+
 }
 
 /* Scrollbar styling */
@@ -76,7 +76,7 @@
   background: $blue-100;
 }
 
-/* Canvas Container (for container and nav components) */
+
 .canvas-container {
   position: relative;
   min-width: 300px;
@@ -85,20 +85,13 @@
   background: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 12px;
+
   display: flex; /* Ensure flex for children */
   flex-direction: column; /* Default for containers */
   gap: 12px;
 }
 
-/* Nested container children */
-.canvas-container [cdkDropList] {
-  min-height: 100px; /* Ensure nested containers have space */
-  min-width: 100%;
-  background: #f9f9f9; /* Slightly different background for visibility */
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 8px;
-}
+
 
 /* Ensure children are visible */
 .canvas-container .canvas-child {
@@ -112,6 +105,19 @@
   pointer-events: none; /* Prevent blocking drops */
   color: #{$gray-500};
 }
+
+
+
+/* Nested container children */
+.canvas-container [cdkDropList] {
+  min-height: 100px; /* Ensure nested containers have space */
+  min-width: 100%;
+  background: #f9f9f9; /* Slightly different background for visibility */
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px;
+}
+
 
 /* Loading State */
 .component-wrapper.loading {
@@ -142,7 +148,9 @@
     width: 200px;
     font-size: 12px;
   }
+
   .component-wrapper, .canvas-container {
+
     min-width: 200px;
     min-height: 100px;
   }
@@ -163,8 +171,10 @@
   }
 }
 
-/* General Transitions */
+
+
 .nav-link, .component-wrapper, .canvas-container {
+
   transition: all 0.3s ease;
 }
 
@@ -219,6 +229,7 @@
   border-color: #007bff;
   box-shadow: 0 0 5px rgba(0,123,255,0.4);
 }
+
 
 /* Toggle button style */
 button.rounded-circle {

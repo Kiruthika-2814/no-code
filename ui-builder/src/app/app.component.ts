@@ -8,11 +8,24 @@ import { HeaderLayoutComponent } from './header-layout/header-layout.component';
 import { PropertiesPanelComponent } from './properties-panel/properties-panel.component';
 import { SafeHtmlPipe } from '../safe-html.pipe';
 import { SidebarComponent } from './sidebar/sidebar.component';
+
 import { ToastComponent } from './toast/toast.component';
 import { HostListener } from '@angular/core';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ContextMenuComponent } from './context-menu/context-menu.component';
 import { DashboardComponent } from './models/dashboard-model';
+
+import { PageManagerComponent } from './page-manager/page-manager.component';
+
+
+
+
+
+
+
+
+
+
 
 @Component({
   selector: 'app-root',
@@ -26,10 +39,18 @@ import { DashboardComponent } from './models/dashboard-model';
     HeaderLayoutComponent,
     PropertiesPanelComponent,
     SafeHtmlPipe,
+
+   
     SidebarComponent,
+
+    PageManagerComponent,
     ToastComponent,
     ConfirmDialogComponent,
     ContextMenuComponent
+
+   
+
+
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -40,6 +61,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   canvasComponents: DashboardComponent[] = [];
   sidebarGroups: any[] = [];
   selectedComponent: DashboardComponent | null = null;
+
   searchTerm: string = '';
   isCollapsed: boolean = false;
   highlightRowIndex: number = 0;
@@ -50,11 +72,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   highlightCellColor: string = '#ffccee';
   cellControls: FormControl[][] = [];
   checkboxValue: any[] = [];
+  
   fontWeights: (string | number)[] = ['normal', 'bold', 'bolder', 'lighter', 100, 200, 300, 400, 500, 600, 700, 800, 900];
   sidebarConnectedTo: string[] = ['canvasList'];
-  canvasConnectedTo: string[] = [];
- toastMessage = '';
+
+   toastMessage = '';
   toastVisible = false;
+
+
+  canvasConnectedTo: string[] = [];
+
   constructor(public http: HttpClient, public changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
@@ -197,11 +224,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     return 'comp-' + Math.random().toString(36).substr(2, 9);
   }
 
+
+
+
+       
   getAllContainerIds(): string[] {
     const ids: string[] = [];
     const collect = (list: DashboardComponent[]) => {
       (list || []).forEach(c => {
         if (c && ['container', 'nav'].includes(c.type) && c.id) {
+
           ids.push(c.id);
         }
         if (c.children?.length) collect(c.children);
@@ -231,11 +263,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     } else {
       return this.getDescendantContainerIds(comp);
     }
+
   }
 
   updateConnectedLists(): void {
     this.sidebarConnectedTo = ['canvasList', ...this.getAllContainerIds()];
-    this.canvasConnectedTo = this.getConnectedLists(null);
+
+    this.canvasConnectedTo = ['sidebarList', ...this.getAllContainerIds()]
+   
     console.log('Updated connected lists:', {
       sidebarConnectedTo: this.sidebarConnectedTo,
       canvasConnectedTo: this.canvasConnectedTo
@@ -347,6 +382,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       newCompOrMoved = event.container.data[event.currentIndex];
       console.log('Reordered component:', newCompOrMoved.id, newCompOrMoved.type);
     } else {
+
+      // Restrict transfers: only allow to canvas or from sidebar
+      if (event.container.id !== 'canvasList' && event.previousContainer.id !== 'sidebarList') {
+        console.log('Restricted move: not allowing transfer from ' + event.previousContainer.id + ' to ' + event.container.id);
+        return;
+      }
+
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       newCompOrMoved = event.container.data[event.currentIndex];
       console.log('Moved component:', newCompOrMoved.id, newCompOrMoved.type);
@@ -710,3 +752,5 @@ onEnterKey(event: KeyboardEvent) {
     console.log('Selected after adding from sidebar:', this.selectedComponent?.id, this.selectedComponent?.type);
   }
 }
+
+

@@ -8,6 +8,7 @@ import {
   OnChanges,
   SimpleChanges
 } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -15,12 +16,17 @@ interface DashboardComponent {
   type: string;
   id: string;
   style?: string;
+
   display?: 'flex' | 'grid';
   flexDirection?: 'row' | 'column';
   justifyContent?: string;
   alignItems?: string;
   gapValue?: number;
   gapUnit?: string;
+
+  
+
+
   gap?: string;
   background?: string;
   gridColumns?: number;
@@ -28,6 +34,10 @@ interface DashboardComponent {
   gridAutoFlow?: 'row' | 'column' | 'dense';
   justifyItems?: string;
   gridTemplateAreas?: string;
+
+
+ 
+
 }
 
 @Component({
@@ -40,17 +50,21 @@ export class ContainerNavComponent implements OnChanges {
   @Input() selectedComponent: DashboardComponent | null = null;
   @Output() componentUpdated = new EventEmitter<DashboardComponent>();
 
+
   flexDirections: string[] = ['row', 'column'];
   justifyOptions: string[] = ['Left', 'Center', 'Right', 'Space Between', 'Space Around'];
   alignOptions: string[] = ['Top', 'Center', 'Bottom', 'Stretch'];
   gapUnits: string[] = ['px', 'em', 'rem', 'vw', 'vh', '%'];
   gridAlignOptions: string[] = ['start', 'center', 'end', 'stretch'];
 
+
+
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedComponent'] && this.selectedComponent) {
       this.selectedComponent = { ...this.selectedComponent };
+
 
       // Flex defaults
       if (!this.selectedComponent.display) this.selectedComponent.display = 'flex';
@@ -70,9 +84,22 @@ export class ContainerNavComponent implements OnChanges {
 
       this.updateGap();
       this.updateCanvasComponent();
+
+
+      this.selectedComponent.flexDirection = this.selectedComponent.flexDirection ?? 'column';
+      this.selectedComponent.justifyContent = this.selectedComponent.justifyContent ?? 'flex-start';
+      this.selectedComponent.alignItems = this.selectedComponent.alignItems ?? 'stretch';
+      this.selectedComponent.gap = this.selectedComponent.gap ?? '12';
+      this.selectedComponent.padding = this.selectedComponent.padding ?? '';
+      this.selectedComponent.background = this.selectedComponent.background ?? '#ffffff';
+      this.selectedComponent.borderRadius = this.selectedComponent.borderRadius ?? '';
+      this.selectedComponent.shadow = this.selectedComponent.shadow ?? 'none';
+      this.selectedComponent.overflow = this.selectedComponent.overflow ?? 'visible';
+
       this.changeDetectorRef.detectChanges();
     }
   }
+
 
   // ----------------- GAP HANDLING -----------------
   private updateGap(): void {
@@ -177,7 +204,7 @@ export class ContainerNavComponent implements OnChanges {
     }
   }
 
-  // ----------------- MAIN UPDATE -----------------
+ 
   updateCanvasComponent(): void {
     if (!this.selectedComponent?.id || !this.selectedComponent?.type) return;
 
@@ -203,6 +230,7 @@ export class ContainerNavComponent implements OnChanges {
     this.componentUpdated.emit(updatedComponent);
     this.changeDetectorRef.detectChanges();
   }
+
 
   // ----------------- ALIGN HANDLERS -----------------
   onAlignXChange(value: string) {

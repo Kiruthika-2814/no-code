@@ -1,5 +1,9 @@
 [
-  {
+
+{
+
+  
+
     "pageName": "homePage",
     "sidebarGroups": [
       {
@@ -142,6 +146,7 @@
             "icon": "bi bi-textarea-resize"
           },
           {
+
             "type": "name-group",
             "id": "nameFields",
             "displayName": "Name Fields",
@@ -170,6 +175,7 @@
           },
           
           {
+
             "type": "select",
             "id": "dropdownExample",
             "displayName": "Dropdown",
@@ -281,6 +287,4 @@
       }
     ]
   }
-]  
-
- 
+]

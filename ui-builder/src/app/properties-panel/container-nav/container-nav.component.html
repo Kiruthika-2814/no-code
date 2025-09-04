@@ -1,3 +1,4 @@
+
 <ng-container *ngIf="selectedComponent?.type === 'container' || selectedComponent?.type === 'nav'">
   <div class="divider my-2"><span>Container Layout</span></div>
 
@@ -119,4 +120,5 @@
     <input type="color" class="form-control form-control-color"
            [(ngModel)]="selectedComponent!.background" (ngModelChange)="updateCanvasComponent()" />
   </div>
+
 </ng-container>
