@@ -1,0 +1,22 @@
+.toast-message {
+  position: fixed;
+  top: 70px; // below header
+  left: 50%;
+  transform: translateX(-50%);
+ background: linear-gradient(90deg, #007bff, #00c6ff);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 12000; // higher than sidebar & header
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toast-message.show {
+  opacity: 1;
+}

@@ -24,6 +24,9 @@ interface DashboardComponent {
   gapValue?: number;
   gapUnit?: string;
 
+  
+
+
   gap?: string;
   background?: string;
   gridColumns?: number;
@@ -33,18 +36,7 @@ interface DashboardComponent {
   gridTemplateAreas?: string;
 
 
-  gap?: string;
-  background?: string;
-
-  borderRadius?: string;
-  shadow?: string;
-  overflow?: string;
-
-  gridColumns?: number;
-  gridRows?: number;
-  gridAutoFlow?: 'row' | 'column' | 'dense';
-  justifyItems?: string;
-  gridTemplateAreas?: string;
+ 
 
 }
 
