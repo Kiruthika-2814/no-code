@@ -8,6 +8,7 @@ import { HeaderLayoutComponent } from './header-layout/header-layout.component';
 import { PropertiesPanelComponent } from './properties-panel/properties-panel.component';
 import { SafeHtmlPipe } from '../safe-html.pipe';
 import { SidebarComponent } from './sidebar/sidebar.component';
+
 import { ToastComponent } from './toast/toast.component';
 import { HostListener } from '@angular/core';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
@@ -15,6 +16,12 @@ import { ContextMenuComponent } from './context-menu/context-menu.component';
 import { DashboardComponent } from './models/dashboard-model';
 
 import { PageManagerComponent } from './page-manager/page-manager.component';
+
+
+
+import { PageManagerComponent } from './page-manager/page-manager.component';
+
+
 
 
 
@@ -35,10 +42,14 @@ import { PageManagerComponent } from './page-manager/page-manager.component';
 
    
     SidebarComponent,
+
     PageManagerComponent,
     ToastComponent,
     ConfirmDialogComponent,
     ContextMenuComponent
+
+    PageManagerComponent
+
 
   ],
   templateUrl: './app.component.html',
@@ -64,8 +75,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   
   fontWeights: (string | number)[] = ['normal', 'bold', 'bolder', 'lighter', 100, 200, 300, 400, 500, 600, 700, 800, 900];
   sidebarConnectedTo: string[] = ['canvasList'];
+
    toastMessage = '';
   toastVisible = false;
+
 
   canvasConnectedTo: string[] = [];
 

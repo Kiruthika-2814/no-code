@@ -23,9 +23,11 @@ interface DashboardComponent {
   alignItems?: string;
   gapValue?: number;
   gapUnit?: string;
-padding?: string;
-  gap?: string;
+
   
+
+
+  gap?: string;
   background?: string;
   gridColumns?: number;
   gridRows?: number;
@@ -34,13 +36,7 @@ padding?: string;
   gridTemplateAreas?: string;
 
 
-  
-
-  borderRadius?: string;
-  shadow?: string;
-  overflow?: string;
-
-  
+ 
 
 }
 
@@ -211,25 +207,26 @@ export class ContainerNavComponent implements OnChanges {
  
   updateCanvasComponent(): void {
     if (!this.selectedComponent?.id || !this.selectedComponent?.type) return;
+
+    this.updateGap();
     const updatedComponent: DashboardComponent = { ...this.selectedComponent };
-    const styles: string[] = ['display:flex'];
-    if (updatedComponent.flexDirection) styles.push(`flex-direction:${updatedComponent.flexDirection}`);
-    if (updatedComponent.justifyContent) styles.push(`justify-content:${updatedComponent.justifyContent}`);
-    if (updatedComponent.alignItems) styles.push(`align-items:${updatedComponent.alignItems}`);
-    if (updatedComponent.gap) styles.push(`gap:${updatedComponent.gap}px`);
-    if (updatedComponent.padding) styles.push(`padding:${updatedComponent.padding}`);
-    if (updatedComponent.background) styles.push(`background:${updatedComponent.background}`);
-    if (updatedComponent.borderRadius) styles.push(`border-radius:${updatedComponent.borderRadius}`);
-    if (updatedComponent.shadow && updatedComponent.shadow !== 'none') {
-      const shadows: { [key: string]: string } = {
-        sm: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-        md: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-        lg: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
-      };
-      styles.push(`box-shadow:${shadows[updatedComponent.shadow] || 'none'}`);
+    const styles: string[] = [];
+
+    if (updatedComponent.display) styles.push(`display:${updatedComponent.display}`);
+    
+    if (updatedComponent.display === 'flex') {
+      if (updatedComponent.flexDirection) styles.push(`flex-direction:${updatedComponent.flexDirection}`);
+      if (updatedComponent.gap) styles.push(`gap:${updatedComponent.gap}`);
+      this.buildFlexAlignment(updatedComponent, styles);
+    } else if (updatedComponent.display === 'grid') {
+      if (updatedComponent.gap) styles.push(`gap:${updatedComponent.gap}`);
+      this.buildGridAlignment(updatedComponent, styles);
+      this.buildGridTemplate(updatedComponent, styles);
     }
-    if (updatedComponent.overflow) styles.push(`overflow:${updatedComponent.overflow}`);
+
+    if (updatedComponent.background) styles.push(`background:${updatedComponent.background}`);
     updatedComponent.style = styles.join(';');
+
     this.componentUpdated.emit(updatedComponent);
     this.changeDetectorRef.detectChanges();
   }
@@ -270,4 +267,5 @@ export class ContainerNavComponent implements OnChanges {
     this.updateCanvasComponent();
   }
 }
+
 

@@ -56,6 +56,7 @@ interface DashboardComponent {
 
   flexDirection?: 'row' | 'column';
   justifyContent?: string;  // accepts "Left", "Right", etc.
+
   alignItems?: string;      // accepts "Top", "Space Between", etc.
 
 
