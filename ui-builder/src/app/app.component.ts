@@ -8,24 +8,86 @@ import { HeaderLayoutComponent } from './header-layout/header-layout.component';
 import { PropertiesPanelComponent } from './properties-panel/properties-panel.component';
 import { SafeHtmlPipe } from '../safe-html.pipe';
 import { SidebarComponent } from './sidebar/sidebar.component';
-
-import { ToastComponent } from './toast/toast.component';
 import { HostListener } from '@angular/core';
-import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import { ContextMenuComponent } from './context-menu/context-menu.component';
-import { DashboardComponent } from './models/dashboard-model';
 
-import { PageManagerComponent } from './page-manager/page-manager.component';
+interface DashboardComponent {
+  type: string;
+  displayName?: string;
+  style?: string;
+  text?: string;
+  placeholder?: string;
+  value?: string;
+  options?: string[];
+  newOption?: string[];
+  headers?: string[];
+  rows?: any[][];
+  invert?: boolean;
+  src?: string;
+  alt?: string;
+  href?: string;
+  color?: string;
+  fontSize?: string;
+  fontWeight?: string;
+  bgColor?: string;
+  width?: string;
+  height?: string;
+  btnStyle?: string;
+  iconClass?: string;
+  controls?: boolean;
+  autoplay?: boolean;
+  items?: any[];
+  active?: boolean;
+  link?: string;
+  icon?: string;
+  label?: string;
+  id: string;
+  children?: DashboardComponent[];
+  progress?: number;
+  barColor?: string;
+  alertType?: string;
+  title?: string;
+  content?: string;
+  borderRadius?: string;
+  objectFit?: 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
+  class?: string;
+  oddColumnColor?: string;
+  evenColumnColor?: string;
+  oddRowColor?: string;
+  evenRowColor?: string;
+  headerBgColor?: string;
+  specificCellColor?: string;
+  rowNumber?: number;
+  colNumber?: number;
+  flexDirection?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
+  flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
+  justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
+  alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
+  alignContent?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'stretch';
+  gap?: string;
+  alignSelf?: 'auto' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
+  highlightedRows?: { [rowIndex: number]: string };
+  highlightedCols?: { [colIndex: number]: string };
+  highlightedCells?: { [key: string]: string };
+  headerColors?: string[];
+  cellColors?: string[];
+  checked?: boolean;
+  radioStyle?: string;
+  listType?: 'ordered' | 'unordered';
+  action?: string;
+  minWidth?: string;
+  minHeight?: string;
+  fontFamily?: string;
+  fontStyle?: string;
+  textDecoration?: string;
+  textAlign?: string;
+  textStyle?: 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize' | 'sentence';
+}
 
-
-
-
-
-
-
-
-
-
+interface CanvasConfig {
+  flexDirection: 'row' | 'column' | 'row-reverse' | 'column-reverse';
+  justifyContent: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around';
+}
 
 @Component({
   selector: 'app-root',
@@ -39,18 +101,8 @@ import { PageManagerComponent } from './page-manager/page-manager.component';
     HeaderLayoutComponent,
     PropertiesPanelComponent,
     SafeHtmlPipe,
-
-   
-    SidebarComponent,
-
-    PageManagerComponent,
-    ToastComponent,
-    ConfirmDialogComponent,
-    ContextMenuComponent
-
-   
-
-
+    SidebarComponent
+    
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -232,7 +284,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     const ids: string[] = [];
     const collect = (list: DashboardComponent[]) => {
       (list || []).forEach(c => {
+
         if (c && ['container', 'nav'].includes(c.type) && c.id) {
+
+        if (c && ['container', 'nav'].includes(c.type) && c.id && (!excludeId || c.id !== excludeId)) {
 
           ids.push(c.id);
         }
